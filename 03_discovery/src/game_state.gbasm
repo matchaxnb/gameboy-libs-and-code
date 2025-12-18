@@ -1,0 +1,367 @@
+IF !DEF(GAME_STATE_GBASM)
+DEF GAME_STATE_GBASM EQU 0
+SECTION FRAGMENT "PROGRAM", ROM0
+
+; careful, this writes to VRAM
+SubstituteTiles:
+    ret
+
+; based on GameState items, perform state transitions
+_RefreshStateMachine:
+
+    ret
+MutateNonVisualGameState:
+    push af
+    push bc
+    push de
+    ldh a, [wCurKeys]
+    ld c, a ; C <- current keys
+
+
+.f60sec
+    ;; things that happen every second
+    ldh a, [wFrameCounter60]
+    ld b, a ; B <- frame counter
+    ; some state is refreshed only every 60 frames
+    cp 60
+    jr c, .f32
+    
+    ; some state is refreshed every 32 frames
+.f32
+    ld a, b
+    cpl
+    and a, %11111
+    cp %11111
+    jr z, .f16
+    call _HandleSpeedAndMovement
+.f16
+    ; some state is refreshed every 16 frames
+    ld a, b
+    cpl
+    and a, %1111
+    cp %1111
+    jr z, .f8
+
+.f8
+    ; some state is refreshed only every 8 frames
+    ld a, b
+    cpl
+    and a, %111
+    cp %111
+    jr z, .f4
+.f4
+    and a, %11 ; %11
+    xor %11
+    jr nz, .after4Frames
+    ld a, [GameState.velocity]
+    ld hl, SpeedTextDB
+    call GetNthEntryFromTextTable ; de <- address of the string to copy
+   
+    ld hl, GameState.speedAsText
+    ld c, 4
+    call StrCpyWithCleanup ; hl: Target, de: Source, c: Lengthexpected
+
+.after4Frames
+    
+    pop de
+    pop bc
+    pop af
+
+; based on current inputs, mutate visual things
+MutateVisualGameState:
+    push af
+    push bc
+    push de
+    ldh a, [wCurKeys]
+    ld c, a ; C <- current keys
+    ldh a, [wSecCounter]
+    ld b, a
+    and a, %11111100 ; only every 4 seconds
+    cp a, b
+    jr nz, .f60sec
+    ;; things that happen every 4 seconds
+    
+
+.f60sec
+    ;; things that happen every second
+    ;ld de, TILES_LOCATION
+    ;call BlankTile
+    ld a, [GameState.angle]
+    ld b, a
+    ld a, [GameState.velocity]
+    ld d, 0
+    ;call MergeTilesByID
+
+    ldh a, [wFrameCounter60]
+    ld b, a ; B <- frame counter
+    ; some state is refreshed only every 60 frames
+    cp 60
+    jr c, .f32
+    ; write current speed on screen
+    
+    ; some state is refreshed every 32 frames
+.f32
+    ld a, b
+    cpl
+    and a, %11111
+    cp %11111
+    jr z, .f16
+    call _HandleSpeedAndMovement
+.f16
+    ; some state is refreshed every 16 frames
+    ld a, b
+    cpl
+    and a, %1111
+    cp %1111
+    jr z, .f8
+
+.f8
+    ; some state is refreshed only every 8 frames
+    ld a, b
+    cpl
+    and a, %111
+    cp %111
+    jr z, .f4
+.f4
+    and a, %11 ; %11
+    xor %11
+    jr nz, .after4Frames
+    call _WriteSpeedOnScreen
+
+.after4Frames
+    
+    pop de
+    pop bc
+    pop af
+ret
+
+; Mutate game state for speed and movement
+_HandleSpeedAndMovement:
+
+    ;; accelerate
+    bit PADB_UP, c
+    jr z, .decelerate
+DEF ACCELERATOR_FACTOR = 1
+DEF MAX_SPEED = 120
+DEF MIN_SPEED = 0
+DEF ROTATION_FACTOR = 1
+.accelerate
+    ld a, [GameState.velocity]
+    add a, ACCELERATOR_FACTOR
+    cp a, MAX_SPEED
+    jr c, .endSpeed ; if speed <= MAX_SPEED, bye
+    ld a, MAX_SPEED ; cap speed to MAX_SPEED
+    jr .endSpeed
+.decelerate
+    ld a, [GameState.velocity]
+    bit PADB_DOWN, c
+    jr z, .decelerateLess
+.decelerateStrong
+    ; divide speed by 2 if braking
+    srl a ; will eventually become 0
+    jr .endSpeed
+.decelerateLess
+    cp a, 0
+    jp z, .endSpeed
+    dec a
+.endSpeed 
+    ; at this stage, a contains the desired velocity
+    ld [GameState.velocity], a
+
+.rotation
+    ld a, [GameState.angle]
+    bit PADB_LEFT, c
+    jr nz, .rotateLeft
+    bit PADB_RIGHT, c
+    jr nz, .rotateRight
+    jr .endRotate
+.rotateLeft
+    add a, ROTATION_FACTOR
+    jr .endRotate
+.rotateRight
+    sub a, ROTATION_FACTOR
+
+.endRotate
+    ld [GameState.angle], a
+ret
+
+; mutates a, b, c, d, hl
+LastInputsHandle:
+    xor a  
+    ld c, a
+    ld b, a ; BC <- 00
+    ld a, [wNewlyPressed] ; load newly pressed buttons in A
+    ld d, a ; D <- wNewlyPressed
+    ld a, [wLastInputSPointer]
+    and a, 0x0f ; range: 0-15
+    ld c, a ; BC <- relative pointer with B always 0
+    ld hl, wLastInputStrings
+    add hl, bc ; now hl has the address to the most recent input string
+    ld a, [hl] ; a <- wLastInputStrings[ptr]
+    cp a, d ; compare to wNewlyPressed
+    ; jp z, .err ; if there's no change, just do nothing
+    ld [wLastInputSPointer + 1], a
+    ld a, c
+    inc a
+    and a, 0x0f ; rollover to 0
+    ld c, a ; BC <- A with B always = 0
+    ld [wLastInputSPointer], a
+    ld hl, wLastInputSPointer
+    add hl, bc
+    ld [hl], d 
+    jp .out
+.err
+    ld a, 0x13
+    ld [wLastInputSPointer + 1], a
+.out:
+ret
+
+; importantly this doesn't mutate a
+UpDownHandle:
+DEF UpActiveChar = GFX_TILES_OFFSET + 12; CHARVAL("U")
+DEF UpInactiveChar = GFX_TILES_OFFSET + 11
+DEF DownActiveChar = GFX_TILES_OFFSET + 14
+DEF DownInactiveChar = GFX_TILES_OFFSET + 13
+
+    cp a,  0 ; case: no up, no down
+    jr z, .unsetAll ; none of up or down is set
+    cp a, %10000000 ; case: up
+    jr c, .upIsSet ; up is set, so down is not
+    ; case: down
+.downIsSet:
+    VIEWPORT_TILE_ADDR 6, 3, UpInactiveChar, $9800
+    VIEWPORT_TILE_ADDR 6, 7, DownActiveChar, $9800
+    jr .out
+.upIsSet:
+    VIEWPORT_TILE_ADDR 6, 3, UpActiveChar, $9800
+    VIEWPORT_TILE_ADDR 6, 7, DownInactiveChar, $9800
+    jr .out
+.unsetAll:
+    VIEWPORT_TILE_ADDR 6, 3, UpInactiveChar, $9800
+    VIEWPORT_TILE_ADDR 6, 7, DownInactiveChar, $9800
+.out:
+ret
+
+; importantly this doesn't mutate a
+LeftRightHandle:
+DEF LeftActiveChar = GFX_TILES_OFFSET + 16; CHARVAL("U")
+DEF LeftInactiveChar = GFX_TILES_OFFSET + 15; CHARVAL("_")
+DEF RightActiveChar = GFX_TILES_OFFSET + 18
+DEF RightInactiveChar = GFX_TILES_OFFSET + 17
+    cp a,  0 ; case: no left, no right
+    jr z, .unsetAll ; none of left or right
+    cp a, %00100000 ; case: right
+    jr c, .rightIsSet
+    ; case: left
+.leftIsSet:
+    VIEWPORT_TILE_ADDR 4, 5, LeftActiveChar, $9800
+    VIEWPORT_TILE_ADDR 8, 5, RightInactiveChar, $9800
+    jr .out
+.rightIsSet:
+    VIEWPORT_TILE_ADDR 4, 5, LeftInactiveChar, $9800
+    VIEWPORT_TILE_ADDR 8, 5, RightActiveChar, $9800
+    jr .out
+.unsetAll:
+    VIEWPORT_TILE_ADDR 4, 5, LeftInactiveChar, $9800
+    VIEWPORT_TILE_ADDR 8, 5, RightInactiveChar, $9800
+.out:
+ret
+
+
+AHandle:
+    cp a, 0
+    jp nz, .isset
+DEF AActiveChar  = GFX_TILES_OFFSET + 21
+DEF AInactiveChar = GFX_TILES_OFFSET + 20
+    VIEWPORT_TILE_ADDR 7, 9, AInactiveChar, $9800
+    jp .out
+.isset:  
+    VIEWPORT_TILE_ADDR 7, 9, AActiveChar, $9800
+.out:
+ret 
+
+BHandle:
+    cp a, 0
+    jp nz, .isset
+DEF BActiveChar = GFX_TILES_OFFSET + 21
+DEF BInactiveChar = GFX_TILES_OFFSET + 19
+    VIEWPORT_TILE_ADDR 5, 9, BInactiveChar, $9800
+    jp .out
+.isset:  
+    VIEWPORT_TILE_ADDR 5, 9, BActiveChar, $9800
+.out:
+ret 
+
+StartHandle:
+    cp a, 0
+    jp nz, .isset
+DEF StartActiveChar = GFX_TILES_OFFSET + 25
+DEF StartInactiveChar = GFX_TILES_OFFSET + 24
+    VIEWPORT_TILE_ADDR 7, 10, StartInactiveChar, $9800
+    jp .out
+.isset:  
+    VIEWPORT_TILE_ADDR 7, 10, StartActiveChar, $9800
+.out:
+ret 
+
+SelectHandle:
+    cp a, 0
+    jp nz, .isset
+DEF SelectActiveChar = GFX_TILES_OFFSET + 23
+DEF SelectInactiveChar = GFX_TILES_OFFSET + 22
+    VIEWPORT_TILE_ADDR 5, 10, SelectInactiveChar, $9800
+    jp .out
+.isset:  
+    VIEWPORT_TILE_ADDR 5, 10, SelectActiveChar, $9800
+.out:
+ret 
+
+DEF BaseTileAddrForText = 17 * 32 + 4
+DEF GameTileMapOffset = TitleScreenTM + BaseTileAddrForText
+DEF GameTileLastOffset = GameTileMapOffset + 10
+
+; uses no input parameters, purely based on game state
+_WriteSpeedOnScreen:
+    push hl
+    push de
+    push bc
+    ld bc, GameTileMapOffset
+    ld hl, GameState.speedAsText
+    ld de, $9800 + BaseTileAddrForText
+FOR N, GameTileLastOffset - GameTileMapOffset, 0, -1
+    ld a, [hl]
+    cp 0
+    jr z, .reconf{N}
+    ld [de], a
+    inc de
+    inc hl
+    inc bc
+    jr .noReconf{N}
+.reconf{N}
+    ld h, N
+    jp _redrawScreen
+.noReconf{N}
+ENDR
+_endWsOS:
+    pop bc
+    pop de
+    pop hl
+ret
+
+; auxiliary to WriteSpeedOnScreen
+_redrawScreen:
+.loopRS
+    ld a, [bc]
+    cp 0
+    jr z, .noadd
+    add GFX_TILES_OFFSET
+.noadd:
+    ld [de], a
+    inc de
+    inc bc
+    dec h
+    ld a, h
+    cp 0
+    jr nz, .loopRS
+    jr _endWsOS
+ENDC

@@ -1,0 +1,39 @@
+IF !DEF(MEMORY_MAP_GBASM)
+DEF MEMORY_MAP_GBASM EQU 0
+SECTION "VARIABLES", WRAM0[$c000]
+;; MSB[DOWN UP LEFT RIGHT START SELECT B A]LSB
+GlobalVariables:
+wNewlyPressed: db
+wNewlyReleased: db
+wLastUpdatedInput: db
+wLastInputStrings: ds 16
+wLastInputSPointer: db
+
+GlobalVariablesEnd:
+
+;; this defines the GameState structure
+SECTION "GameState", WRAM0[GlobalVariablesEnd]
+
+GameState:
+    GameState.room:: db ; room ID 1 byte
+UNION  ; 2 bytes
+    GameState.velocity:: ds 1 ; 
+    GameState.angle:: ds 1 ;
+NEXTU
+    GameState.movement:: ds 2 ; vector<H,V>
+ENDU
+    GameState.speedAsText:: ds 8 ; string for speed
+    GameState.stateMachineState: db ; just an ID
+GameStateEnd:
+
+SECTION "TileSets", VRAM[$9000]
+
+
+SECTION "HighVars", HRAM[$FF80]
+wCurKeys: db
+wPrevKeys: db
+wTimeCounter: dw
+wFrameCounter60: db ; 0 <=  x <= 60
+wSecCounter: db
+lastEntry: dw
+ENDC

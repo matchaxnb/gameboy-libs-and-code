@@ -1,13 +1,6 @@
-; @param de: Source address
-; @param hl: Destination address
-; @param bc: Length to copy
-Memcopy:
-  ld a, [de] ; get a chunk
-  ld [hli], a ; A<-[HL], HL++
-  inc de ; next target
-  dec bc ; one less to go 
-  ld a, b ; A<-(top of BC)
-  or a, c ; A <- A|C
-  jp nz, Memcopy
-  ret
-
+INCLUDE "libs/offsetting.gbasm"
+INCLUDE "libs/memory.gbasm"
+INCLUDE "libs/tilemaps.gbasm"
+INCLUDE "libs/tiles.gbasm"
+INCLUDE "libs/input.gbasm"
+INCLUDE "libs/strings.gbasm"
