@@ -1,6 +1,7 @@
 INCLUDE "defines/hardware.inc"
 INCLUDE "defines/palettes.inc"
 INCLUDE "src/assets.gbasm"
+INCLUDE "src/audio_assets.gbasm"
 INCLUDE "src/charmap.gbasm"
 INCLUDE "macros/macros.gbasm"
 INCLUDE "src/memory_map.gbasm"
