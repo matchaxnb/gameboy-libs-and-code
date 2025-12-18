@@ -1,7 +1,7 @@
 ;;; memory map
 DEF MCOFFSET_RETADDR EQU 0xC000 ; to 0xC001, relative 
 DEF MCOFFSET_OFFSET EQU 0xC002 ; single byte
-
+DEF ENABLE_VBLANKINT EQU 1      ; use VBlank interrupt
 DEF PRINT_DEBUG EQU 0
 
 ASSERT (PRINT_DEBUG == 0 || PRINT_DEBUG == 1)
@@ -201,19 +201,6 @@ ENDM
 
 ; wait for VBlank
 
-MACRO WAIT_VBL
-.wvbl\@:
-  ld a, [rLY]
-  cp SCRN_Y
-  jp c, .wvbl\@
-ENDM
-
-MACRO WAIT_NVBL
-.wnvbl\@:
-  ld a, [rLY]
-  cp SCRN_Y
-  jp nc, .wnvbl\@
-ENDM
 ; wait for VBlank and jump to label specified as first arg
 ; @param \1 (optional) label to jump to once we're done
 MACRO WAIT_VBL_JP
@@ -348,22 +335,57 @@ MACRO IS_BUTTON_SET_UNSET
 ENDM
 
 ; mutates a
+IF (DEF(ENABLE_VBLANKINT) && ENABLE_VBLANKINT == 1)
+; mutates VBlank
+MACRO WaitForVBlank
+ld hl, inVBlank
+xor a
+.waitVbl\@
+  halt
+  cp a, [hl]
+  jr z, .waitVbl\@
+  ld [hl], a
+ENDM
+
+MACRO WaitForNonVBlank
+ld hl, inVBlank
+xor a
+.waitNVbl\@
+  halt
+  cp a, [hl]
+  jr c, .waitNVbl\@
+ENDM
+
+
+ELSE
 MACRO WaitForVBlank
 .vbl\@: ld a, [rLY]
         cp SCRN_Y
         jr c, .vbl\@
 ENDM
+MACRO WaitForNonVBlank
+.nvbl\@: ld a, [rLY]
+        cp SCRN_Y
+        jr nc, .nvbl\@
+ENDM
+
+ENDC
+
+
+MACRO WAIT_VBL
+WaitForVBlank
+ENDM
+
+MACRO WAIT_NVBL
+WaitForNonVBlank
+ENDM
+
 
 MACRO PrepareForVRAMWrite
 WaitForVBlank
 xor a
 ld [rLCDC], a
 
-ENDM
-MACRO WaitForNonVBlank
-.nvbl\@: ld a, [rLY]
-        cp SCRN_Y
-        jr nc, .nvbl\@
 ENDM
 
 

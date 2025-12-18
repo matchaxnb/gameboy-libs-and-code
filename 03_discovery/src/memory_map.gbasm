@@ -30,6 +30,9 @@ SECTION "TileSets", VRAM[$9000]
 
 
 SECTION "HighVars", HRAM[$FF80]
+IF (DEF(ENABLE_VBLANKINT) && ENABLE_VBLANKINT == 1)
+inVBlank: db
+ENDC
 wCurKeys: db
 wPrevKeys: db
 wTimeCounter: dw

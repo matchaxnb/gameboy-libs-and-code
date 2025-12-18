@@ -1,6 +1,5 @@
 IF !DEF(BOOTSTRAP_GBASM)
 DEF BOOTSTRAP_GBASM EQU 0
-DEF ENABLE_VBLANKINT EQU 1
 
 SECTION "RESERVED", ROM0[$0]
 
@@ -26,6 +25,7 @@ EntryPoint:
 ld a, 0
 ld [rNR52], a
 
+
 ;; reset RAM to 0
  ld hl, _RAM
  ld bc, GameStateEnd - GlobalVariables
@@ -37,6 +37,18 @@ ld [rNR52], a
  ld d, 0
  call InitMemChunk
 
+; enable interrupts
+IF (DEF(ENABLE_VBLANKINT) && ENABLE_VBLANKINT == 1)
+; setup the timer
+ld a, IEF_VBLANK
+ldh [rIE], a
+xor a
+ldh [rIF], a
+ei ;; enable the interrupts, because we have defined a non-nop vector there
+nop ;; in case
+ELSE
+
+ENDC
 
 
 ; can't touch VRAM anything until we're in VBlank, so...
@@ -82,18 +94,6 @@ call LoadTilemapWithPositiveOffset
 ld a, LCDCF_ON | LCDCF_BGON
 ld [rLCDC], a
 
-IF DEF(ENABLE_VBLANKINT)
-; setup the timer
-ld a, IEF_VBLANK
-ldh [rIE], a
-xor a
-ldh [rIF], a
-
-
-ei ;; enable the interrupts, because we have defined a non-nop vector there
-else
-
-ENDC
 ; the gameloop will takeover from there
 
 jp MainLoop

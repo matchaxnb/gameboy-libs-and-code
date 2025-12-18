@@ -1,7 +1,7 @@
 IF !DEF(LOW_LEVEL_GBASM)
 DEF LOW_LEVEL_GBASM EQU 0
 
-IF DEF(ENABLE_VBLANKINT)
+IF (DEF(ENABLE_VBLANKINT) && ENABLE_VBLANKINT == 1)
 
 SECTION "VBLANKINT", ROM0[$0040]
 push af
@@ -12,7 +12,8 @@ jp VBlankInterruptHandler
 
 SECTION FRAGMENT "PROGRAM", ROM0
 VBlankInterruptHandler:
-
+  ld hl, inVBlank
+  ld [hl], 0xf0
   ldh a, [wTimeCounter + 1]
   inc a
   ldh [wTimeCounter + 1], a

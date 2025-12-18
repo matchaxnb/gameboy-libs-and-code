@@ -6,16 +6,21 @@ SECTION FRAGMENT "PROGRAM", ROM0
 MainLoop:
   ; these can run outside of VBlank
 .nonVbl:
+  call MutateNonVisualGameState
   call PollInput
   call SetInputState
-  call MutateNonVisualGameState
-  WaitForVBlank
   
+  
+  ;; now all state that can be mutated outside of VBlank is handled
+  ;; we go to sleep until it's time to draw
   if (!DEF(TROUBLESHOOT_ENGINE) || TROUBLESHOOT_ENGINE == 0)
   ;; perform changes to tilemap and so on
 
-  ;call TextToTilemap9800
+  
   ; this can only be done during VBlank
+  
+  WaitForVBlank
+
   ; now we're in VBlank
   
   IS_BUTTON_STATUS_CALLFUN UD, UpDownHandle
@@ -34,10 +39,7 @@ call MutateVisualGameState
   REPT 1024
   nop
   ENDR
-  ENDC ; end IF !DEF(TROUBLESHOOT_ENGINE)
-IF DEF(ENABLE_VBLANKINT)
-halt
-ENDC
+ENDC ; end IF !DEF(TROUBLESHOOT_ENGINE)
 jp MainLoop
 
 ENDC

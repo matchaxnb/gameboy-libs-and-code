@@ -1,176 +1,176 @@
 SUMMARY:
-	ROM0: 4836 bytes used / 11548 free
+	ROM0: 4847 bytes used / 11537 free
 	WRAM0: 32 bytes used / 4064 free
-	HRAM: 8 bytes used / 119 free
+	HRAM: 9 bytes used / 118 free
 
 ROM0 bank #0:
 	SECTION: $0000-$003f ($0040 bytes) ["RESERVED"]
 	SECTION: $0040-$0046 ($0007 bytes) ["VBLANKINT"]
 	EMPTY: $0047-$00ff ($00b9 bytes)
 	SECTION: $0100-$014f ($0050 bytes) ["HEADER"]
-	SECTION: $0150-$01af ($0060 bytes) ["STARTUPCODE"]
+	SECTION: $0150-$01b2 ($0063 bytes) ["STARTUPCODE"]
 	         $0150 = EntryPoint
-	         $016b = EntryPoint.vbl_u14
-	SECTION: $01b0-$0727 ($0578 bytes) ["PROGRAM"]
-	         $01b0 = OffsetAddressBlockPos
-	         $01b0 = Libraries
-	         $01b7 = OffsetAddressBlockPos.loopMul
-	         $01c2 = OffsetAddressBlockNeg
-	         $01c3 = OffsetAddressBlockNeg.loopw
-	         $01cf = OffsetAddressBlockNeg.complex
-	         $01d4 = OffsetAddressBlockNeg.loopend
-	         $01dc = Memcopy
-	         $01dc = Memcopy.lpm
-	         $01e5 = MemcopySafe
-	         $01e8 = MemcopySafe.lpm
-	         $01f4 = InitMemChunk
-	         $01f4 = InitMemChunk.lp
-	         $01fc = LoadTilemapWithPositiveOffset
-	         $0201 = LoadTilemapWithPositiveOffset.loadLoop
-	         $0207 = LoadTilemapWithPositiveOffset.ldr_u1
-	         $020f = LoadTilemapWithPositiveOffset.ldr_u2
-	         $0217 = LoadTilemapWithPositiveOffset.ldr_u3
-	         $021f = LoadTilemapWithPositiveOffset.ldr_u4
-	         $0227 = LoadTilemapWithPositiveOffset.endLt
-	         $0229 = LoadTilemapWithNegativeOffset
-	         $022e = LoadTilemapWithNegativeOffset.loadLoop
-	         $0234 = LoadTilemapWithNegativeOffset.ldr_u5
-	         $023c = LoadTilemapWithNegativeOffset.ldr_u6
-	         $0244 = LoadTilemapWithNegativeOffset.ldr_u7
-	         $024c = LoadTilemapWithNegativeOffset.ldr_u8
-	         $0254 = LoadTilemapWithNegativeOffset.endLt
-	         $0256 = LoadTilemapWithOffset
-	         $0261 = LoadTilemapWithOffset.negOffset
-	         $0267 = LoadTilemapWithOffset.eof
-	         $0269 = CopyTilesWithOffset
-	         $0273 = CopyTilesWithOffset.negOffset
-	         $0279 = CopyTilesWithOffset.nowLoad
-	         $0288 = CopyTilesWithOffset.handleCarry_u9
-	         $028b = CopyTilesWithOffset.next_u9
-	         $0294 = CopyTilesWithOffset.handleCarry_u10
-	         $0297 = CopyTilesWithOffset.next_u10
-	         $02a0 = CopyTilesWithOffset.handleCarry_u11
-	         $02a3 = CopyTilesWithOffset.next_u11
-	         $02ac = CopyTilesWithOffset.handleCarry_u12
-	         $02af = CopyTilesWithOffset.next_u12
-	         $02b3 = BlankTile
-	         $02d6 = MergeTiles
-	         $0337 = MergeTilesByID
-	         $0341 = MergeTilesByID.offsetA
-	         $0345 = MergeTilesByID.doneOffsetA
-	         $0355 = MergeTilesByID.offsetB
-	         $0359 = MergeTilesByID.doneOffsetB
-	         $0369 = MergeTilesByID.offsetD
-	         $036d = MergeTilesByID.doneOffsetD
-	         $0375 = MergeTilesByID.vbl_u13
-	         $0380 = PollInput
-	         $03d7 = SetInputState
-	         $03f1 = GetNthEntryFromTextTable
-	         $03fd = GetNthEntryFromTextTable.workloop
-	         $0400 = GetNthEntryFromTextTable.incloop
-	         $0406 = GetNthEntryFromTextTable.incdone
-	         $040c = GetNthEntryFromTextTable.exit
-	         $0410 = StrCpy
-	         $041c = StrCpy.strcpyLoop
-	         $0427 = StrCpy.endStrcpy
-	         $042d = StrCpyWithCleanup
-	         $043b = StrCpyWithCleanup.strcpyLoop
-	         $0447 = StrCpyWithCleanup.endStrcpy
-	         $044b = StrCpyWithCleanup.cleanup
-	         $0451 = StrCpyWithCleanup.exit
-	         $0455 = TextToTilemap9800
-	         $045e = TextToTilemap9800.loop
-	         $0469 = TextToTilemap9800.exit
-	         $046b = SubstituteTiles
-	         $046b = EndLibraries
-	         $046c = _RefreshStateMachine
-	         $046d = MutateNonVisualGameState
-	         $0473 = MutateNonVisualGameState.f60sec
-	         $047a = MutateNonVisualGameState.f32
-	         $0485 = MutateNonVisualGameState.f16
-	         $048d = MutateNonVisualGameState.f8
-	         $0495 = MutateNonVisualGameState.f4
-	         $04ac = MutateNonVisualGameState.after4Frames
-	         $04af = MutateVisualGameState
-	         $04bd = MutateVisualGameState.f60sec
-	         $04cd = MutateVisualGameState.f32
-	         $04d8 = MutateVisualGameState.f16
-	         $04e0 = MutateVisualGameState.f8
-	         $04e8 = MutateVisualGameState.f4
-	         $04f1 = MutateVisualGameState.after4Frames
-	         $04f5 = _HandleSpeedAndMovement
-	         $04f9 = _HandleSpeedAndMovement.accelerate
-	         $0506 = _HandleSpeedAndMovement.decelerate
-	         $050d = _HandleSpeedAndMovement.decelerateStrong
-	         $0511 = _HandleSpeedAndMovement.decelerateLess
-	         $0517 = _HandleSpeedAndMovement.endSpeed
-	         $051a = _HandleSpeedAndMovement.rotation
-	         $0527 = _HandleSpeedAndMovement.rotateLeft
-	         $052b = _HandleSpeedAndMovement.rotateRight
-	         $052d = _HandleSpeedAndMovement.endRotate
-	         $0531 = LastInputsHandle
-	         $0557 = LastInputsHandle.err
-	         $055c = LastInputsHandle.out
-	         $055d = UpDownHandle
-	         $0565 = UpDownHandle.downIsSet
-	         $0571 = UpDownHandle.upIsSet
-	         $057d = UpDownHandle.unsetAll
-	         $0587 = UpDownHandle.out
-	         $0588 = LeftRightHandle
-	         $0590 = LeftRightHandle.leftIsSet
-	         $059c = LeftRightHandle.rightIsSet
-	         $05a8 = LeftRightHandle.unsetAll
-	         $05b2 = LeftRightHandle.out
-	         $05b3 = AHandle
-	         $05c0 = AHandle.isset
-	         $05c5 = AHandle.out
-	         $05c6 = BHandle
-	         $05d3 = BHandle.isset
-	         $05d8 = BHandle.out
-	         $05d9 = StartHandle
-	         $05e6 = StartHandle.isset
-	         $05eb = StartHandle.out
-	         $05ec = SelectHandle
-	         $05f9 = SelectHandle.isset
-	         $05fe = SelectHandle.out
-	         $05ff = _WriteSpeedOnScreen
-	         $0616 = _WriteSpeedOnScreen.reconf$A
-	         $061b = _WriteSpeedOnScreen.noReconf$A
-	         $0626 = _WriteSpeedOnScreen.reconf$9
-	         $062b = _WriteSpeedOnScreen.noReconf$9
-	         $0636 = _WriteSpeedOnScreen.reconf$8
-	         $063b = _WriteSpeedOnScreen.noReconf$8
-	         $0646 = _WriteSpeedOnScreen.reconf$7
-	         $064b = _WriteSpeedOnScreen.noReconf$7
-	         $0656 = _WriteSpeedOnScreen.reconf$6
-	         $065b = _WriteSpeedOnScreen.noReconf$6
-	         $0666 = _WriteSpeedOnScreen.reconf$5
-	         $066b = _WriteSpeedOnScreen.noReconf$5
-	         $0676 = _WriteSpeedOnScreen.reconf$4
-	         $067b = _WriteSpeedOnScreen.noReconf$4
-	         $0686 = _WriteSpeedOnScreen.reconf$3
-	         $068b = _WriteSpeedOnScreen.noReconf$3
-	         $0696 = _WriteSpeedOnScreen.reconf$2
-	         $069b = _WriteSpeedOnScreen.noReconf$2
-	         $06a6 = _WriteSpeedOnScreen.reconf$1
-	         $06ab = _WriteSpeedOnScreen.noReconf$1
-	         $06ab = _endWsOS
-	         $06af = _redrawScreen
-	         $06af = _redrawScreen.loopRS
-	         $06b6 = _redrawScreen.noadd
-	         $06c1 = MainLoop
-	         $06c1 = MainLoop.nonVbl
-	         $06ca = MainLoop.vbl_u15
-	         $06fc = VBlankInterruptHandler
-	         $070b = VBlankInterruptHandler.noCarry
-	         $0720 = VBlankInterruptHandler.noIncSec
-	         $0723 = VBlankInterruptHandler.end
-	SECTION: $0728-$08fc ($01d5 bytes) ["TEXT_TABLES"]
-	         $0728 = hello
-	         $0728 = TextTables
-	         $072e = SpeedTextDB
-	         $08fc = SpeedTextDBEnd
-	EMPTY: $08fd-$1fff ($1703 bytes)
+	         $0178 = EntryPoint.waitVbl_u14
+	SECTION: $01b3-$0732 ($0580 bytes) ["PROGRAM"]
+	         $01b3 = OffsetAddressBlockPos
+	         $01b3 = Libraries
+	         $01ba = OffsetAddressBlockPos.loopMul
+	         $01c5 = OffsetAddressBlockNeg
+	         $01c6 = OffsetAddressBlockNeg.loopw
+	         $01d2 = OffsetAddressBlockNeg.complex
+	         $01d7 = OffsetAddressBlockNeg.loopend
+	         $01df = Memcopy
+	         $01df = Memcopy.lpm
+	         $01e8 = MemcopySafe
+	         $01eb = MemcopySafe.lpm
+	         $01f7 = InitMemChunk
+	         $01f7 = InitMemChunk.lp
+	         $01ff = LoadTilemapWithPositiveOffset
+	         $0204 = LoadTilemapWithPositiveOffset.loadLoop
+	         $020a = LoadTilemapWithPositiveOffset.ldr_u1
+	         $0212 = LoadTilemapWithPositiveOffset.ldr_u2
+	         $021a = LoadTilemapWithPositiveOffset.ldr_u3
+	         $0222 = LoadTilemapWithPositiveOffset.ldr_u4
+	         $022a = LoadTilemapWithPositiveOffset.endLt
+	         $022c = LoadTilemapWithNegativeOffset
+	         $0231 = LoadTilemapWithNegativeOffset.loadLoop
+	         $0237 = LoadTilemapWithNegativeOffset.ldr_u5
+	         $023f = LoadTilemapWithNegativeOffset.ldr_u6
+	         $0247 = LoadTilemapWithNegativeOffset.ldr_u7
+	         $024f = LoadTilemapWithNegativeOffset.ldr_u8
+	         $0257 = LoadTilemapWithNegativeOffset.endLt
+	         $0259 = LoadTilemapWithOffset
+	         $0264 = LoadTilemapWithOffset.negOffset
+	         $026a = LoadTilemapWithOffset.eof
+	         $026c = CopyTilesWithOffset
+	         $0276 = CopyTilesWithOffset.negOffset
+	         $027c = CopyTilesWithOffset.nowLoad
+	         $028b = CopyTilesWithOffset.handleCarry_u9
+	         $028e = CopyTilesWithOffset.next_u9
+	         $0297 = CopyTilesWithOffset.handleCarry_u10
+	         $029a = CopyTilesWithOffset.next_u10
+	         $02a3 = CopyTilesWithOffset.handleCarry_u11
+	         $02a6 = CopyTilesWithOffset.next_u11
+	         $02af = CopyTilesWithOffset.handleCarry_u12
+	         $02b2 = CopyTilesWithOffset.next_u12
+	         $02b6 = BlankTile
+	         $02d9 = MergeTiles
+	         $033a = MergeTilesByID
+	         $0344 = MergeTilesByID.offsetA
+	         $0348 = MergeTilesByID.doneOffsetA
+	         $0358 = MergeTilesByID.offsetB
+	         $035c = MergeTilesByID.doneOffsetB
+	         $036c = MergeTilesByID.offsetD
+	         $0370 = MergeTilesByID.doneOffsetD
+	         $037c = MergeTilesByID.waitVbl_u13
+	         $0385 = PollInput
+	         $03dc = SetInputState
+	         $03f6 = GetNthEntryFromTextTable
+	         $0402 = GetNthEntryFromTextTable.workloop
+	         $0405 = GetNthEntryFromTextTable.incloop
+	         $040b = GetNthEntryFromTextTable.incdone
+	         $0411 = GetNthEntryFromTextTable.exit
+	         $0415 = StrCpy
+	         $0421 = StrCpy.strcpyLoop
+	         $042c = StrCpy.endStrcpy
+	         $0432 = StrCpyWithCleanup
+	         $0440 = StrCpyWithCleanup.strcpyLoop
+	         $044c = StrCpyWithCleanup.endStrcpy
+	         $0450 = StrCpyWithCleanup.cleanup
+	         $0456 = StrCpyWithCleanup.exit
+	         $045a = TextToTilemap9800
+	         $0463 = TextToTilemap9800.loop
+	         $046e = TextToTilemap9800.exit
+	         $0470 = SubstituteTiles
+	         $0470 = EndLibraries
+	         $0471 = _RefreshStateMachine
+	         $0472 = MutateNonVisualGameState
+	         $0478 = MutateNonVisualGameState.f60sec
+	         $047f = MutateNonVisualGameState.f32
+	         $048a = MutateNonVisualGameState.f16
+	         $0492 = MutateNonVisualGameState.f8
+	         $049a = MutateNonVisualGameState.f4
+	         $04b1 = MutateNonVisualGameState.after4Frames
+	         $04b4 = MutateVisualGameState
+	         $04c2 = MutateVisualGameState.f60sec
+	         $04d2 = MutateVisualGameState.f32
+	         $04dd = MutateVisualGameState.f16
+	         $04e5 = MutateVisualGameState.f8
+	         $04ed = MutateVisualGameState.f4
+	         $04f6 = MutateVisualGameState.after4Frames
+	         $04fa = _HandleSpeedAndMovement
+	         $04fe = _HandleSpeedAndMovement.accelerate
+	         $050b = _HandleSpeedAndMovement.decelerate
+	         $0512 = _HandleSpeedAndMovement.decelerateStrong
+	         $0516 = _HandleSpeedAndMovement.decelerateLess
+	         $051c = _HandleSpeedAndMovement.endSpeed
+	         $051f = _HandleSpeedAndMovement.rotation
+	         $052c = _HandleSpeedAndMovement.rotateLeft
+	         $0530 = _HandleSpeedAndMovement.rotateRight
+	         $0532 = _HandleSpeedAndMovement.endRotate
+	         $0536 = LastInputsHandle
+	         $055c = LastInputsHandle.err
+	         $0561 = LastInputsHandle.out
+	         $0562 = UpDownHandle
+	         $056a = UpDownHandle.downIsSet
+	         $0576 = UpDownHandle.upIsSet
+	         $0582 = UpDownHandle.unsetAll
+	         $058c = UpDownHandle.out
+	         $058d = LeftRightHandle
+	         $0595 = LeftRightHandle.leftIsSet
+	         $05a1 = LeftRightHandle.rightIsSet
+	         $05ad = LeftRightHandle.unsetAll
+	         $05b7 = LeftRightHandle.out
+	         $05b8 = AHandle
+	         $05c5 = AHandle.isset
+	         $05ca = AHandle.out
+	         $05cb = BHandle
+	         $05d8 = BHandle.isset
+	         $05dd = BHandle.out
+	         $05de = StartHandle
+	         $05eb = StartHandle.isset
+	         $05f0 = StartHandle.out
+	         $05f1 = SelectHandle
+	         $05fe = SelectHandle.isset
+	         $0603 = SelectHandle.out
+	         $0604 = _WriteSpeedOnScreen
+	         $061b = _WriteSpeedOnScreen.reconf$A
+	         $0620 = _WriteSpeedOnScreen.noReconf$A
+	         $062b = _WriteSpeedOnScreen.reconf$9
+	         $0630 = _WriteSpeedOnScreen.noReconf$9
+	         $063b = _WriteSpeedOnScreen.reconf$8
+	         $0640 = _WriteSpeedOnScreen.noReconf$8
+	         $064b = _WriteSpeedOnScreen.reconf$7
+	         $0650 = _WriteSpeedOnScreen.noReconf$7
+	         $065b = _WriteSpeedOnScreen.reconf$6
+	         $0660 = _WriteSpeedOnScreen.noReconf$6
+	         $066b = _WriteSpeedOnScreen.reconf$5
+	         $0670 = _WriteSpeedOnScreen.noReconf$5
+	         $067b = _WriteSpeedOnScreen.reconf$4
+	         $0680 = _WriteSpeedOnScreen.noReconf$4
+	         $068b = _WriteSpeedOnScreen.reconf$3
+	         $0690 = _WriteSpeedOnScreen.noReconf$3
+	         $069b = _WriteSpeedOnScreen.reconf$2
+	         $06a0 = _WriteSpeedOnScreen.noReconf$2
+	         $06ab = _WriteSpeedOnScreen.reconf$1
+	         $06b0 = _WriteSpeedOnScreen.noReconf$1
+	         $06b0 = _endWsOS
+	         $06b4 = _redrawScreen
+	         $06b4 = _redrawScreen.loopRS
+	         $06bb = _redrawScreen.noadd
+	         $06c6 = MainLoop
+	         $06c6 = MainLoop.nonVbl
+	         $06d3 = MainLoop.waitVbl_u15
+	         $0702 = VBlankInterruptHandler
+	         $0716 = VBlankInterruptHandler.noCarry
+	         $072b = VBlankInterruptHandler.noIncSec
+	         $072e = VBlankInterruptHandler.end
+	SECTION: $0733-$0907 ($01d5 bytes) ["TEXT_TABLES"]
+	         $0733 = hello
+	         $0733 = TextTables
+	         $0739 = SpeedTextDB
+	         $0907 = SpeedTextDBEnd
+	EMPTY: $0908-$1fff ($16f8 bytes)
 	SECTION: $2000-$2a9f ($0aa0 bytes) ["GraphicsData"]
 	         $2000 = FontData
 	         $2000 = TilesROM
@@ -183,7 +183,7 @@ ROM0 bank #0:
 	         $2aa0 = TileMapsEnd
 	         $2aa0 = EndTitleScreenTM
 	EMPTY: $2aa0-$3fff ($1560 bytes)
-	TOTAL EMPTY: $2d1c bytes
+	TOTAL EMPTY: $2d11 bytes
 
 VRAM bank #0:
 	EMPTY: $8000-$8fff ($1000 bytes)
@@ -212,12 +212,13 @@ WRAM0 bank #0:
 	TOTAL EMPTY: $0fe0 bytes
 
 HRAM bank #0:
-	SECTION: $ff80-$ff87 ($0008 bytes) ["HighVars"]
-	         $ff80 = wCurKeys
-	         $ff81 = wPrevKeys
-	         $ff82 = wTimeCounter
-	         $ff84 = wFrameCounter60
-	         $ff85 = wSecCounter
-	         $ff86 = lastEntry
-	EMPTY: $ff88-$fffe ($0077 bytes)
-	TOTAL EMPTY: $0077 bytes
+	SECTION: $ff80-$ff88 ($0009 bytes) ["HighVars"]
+	         $ff80 = inVBlank
+	         $ff81 = wCurKeys
+	         $ff82 = wPrevKeys
+	         $ff83 = wTimeCounter
+	         $ff85 = wFrameCounter60
+	         $ff86 = wSecCounter
+	         $ff87 = lastEntry
+	EMPTY: $ff89-$fffe ($0076 bytes)
+	TOTAL EMPTY: $0076 bytes
