@@ -1,0 +1,7 @@
+*.o
+*.binmap
+*.sfc
+*.tilemap
+*.swp
+*.gb
+*.pal
