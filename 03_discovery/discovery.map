@@ -1,0 +1,17 @@
+SUMMARY:
+	ROM0: 1307 bytes used / 15077 free
+
+ROM0 bank #0:
+	EMPTY: $0000-$00ff ($0100 bytes)
+	SECTION: $0100-$014f ($0050 bytes) ["HEADER"]
+	SECTION: $0150-$061a ($04cb bytes) ["DATA"]
+	         $0150 = EntryPoint
+	         $0150 = WVblk
+	         $017e = MainLoop
+	         $0181 = Memcopy
+	         $018b = TileData
+	         $027b = TileDataEnd
+	         $027b = TileMap
+	         $061b = TileMapEnd
+	EMPTY: $061b-$3fff ($39e5 bytes)
+	TOTAL EMPTY: $3ae5 bytes

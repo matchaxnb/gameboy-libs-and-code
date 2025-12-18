@@ -1,5 +1,5 @@
 # rgbasm -o hello-world.o hello-world.asm; rgblink -o hello-world.gb hello-world.o; rgbfix -v -p 0xff hello-world.gb
-.PRECIOUS: %.o %.sym
+.PRECIOUS: %.o %.sym %.map
 .PHONY = (clean $(PROJECT_NAME) asses objs)
 
 
@@ -14,7 +14,7 @@ clean:
 
 %.sym: %.o
 	@echo About to output $@ from $<
-	rgblink -n $@ $<
+	rgblink -m $(patsubst %.sym,%.map,$@) -n $@ $<
 
 %.gb: %.o %.sym */*.gbasm *.gbasm
 	@echo About to output $@
@@ -30,4 +30,5 @@ clean:
 asses: $(ASSES_DST)
 	@echo Assets are $(ASSES_DST)
 	make $(ASSES_DST)
+
 $(PROJECT_NAME): $(PROJECT_NAME).gb $(PROJECT_NAME).sym
