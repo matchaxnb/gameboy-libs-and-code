@@ -1,5 +1,5 @@
 SUMMARY:
-	ROM0: 11761 bytes used / 4623 free
+	ROM0: 11766 bytes used / 4618 free
 	WRAM0: 32 bytes used / 4064 free
 	HRAM: 25 bytes used / 102 free
 
@@ -103,7 +103,7 @@ ROM0 bank #0:
 	         $2860 = TileMaps
 	         $2aa0 = EndTitleScreenTM
 	         $2aa0 = TileMapsEnd
-	SECTION: $2aa0-$340b ($096c bytes) ["PROGRAM"]
+	SECTION: $2aa0-$3410 ($0971 bytes) ["PROGRAM"]
 	         $2aa0 = OffsetAddressBlockPos
 	         $2aa0 = Libraries
 	         $2aa7 = OffsetAddressBlockPos.loopMul
@@ -350,27 +350,27 @@ ROM0 bank #0:
 	         $3305 = AudioPlay_BWV846Compact_Treble.endOfWork_u40
 	         $330e = AudioPlay_BWV846Compact_Treble.restoreContext_u40
 	         $3310 = Change_AudioTrack
-	         $3329 = AudioPlay
-	         $3342 = AudioPlay.testMyMotif
-	         $3350 = AudioPlay.notMyMotif
-	         $335e = AudioPlay.notPrelude
-	         $336d = AudioPlay.callFun
-	         $336d = AudioPlay.notDiatonicC
-	         $337a = AudioPlay.audioPlayEnd
-	         $337a = AudioPlay.postFP_u41
-	         $337d = AudioPlay_Prelude
-	         $3384 = AudioPlay_DiatonicC
-	         $338b = AudioPlay_MyMotif
-	         $3392 = StartGame
-	         $339c = MainLoop
-	         $339c = MainLoop.nonVbl
-	         $33ac = MainLoop.waitVbl_u42
-	         $33db = VBlankInterruptHandler
-	         $33ef = VBlankInterruptHandler.noCarry
-	         $3404 = VBlankInterruptHandler.noIncSec
-	         $3407 = VBlankInterruptHandler.end
-	EMPTY: $340c-$3fff ($0bf4 bytes)
-	TOTAL EMPTY: $120f bytes
+	         $332e = AudioPlay
+	         $3347 = AudioPlay.testMyMotif
+	         $3355 = AudioPlay.notMyMotif
+	         $3363 = AudioPlay.notPrelude
+	         $3372 = AudioPlay.callFun
+	         $3372 = AudioPlay.notDiatonicC
+	         $337f = AudioPlay.audioPlayEnd
+	         $337f = AudioPlay.postFP_u41
+	         $3382 = AudioPlay_Prelude
+	         $3389 = AudioPlay_DiatonicC
+	         $3390 = AudioPlay_MyMotif
+	         $3397 = StartGame
+	         $33a1 = MainLoop
+	         $33a1 = MainLoop.nonVbl
+	         $33b1 = MainLoop.waitVbl_u42
+	         $33e0 = VBlankInterruptHandler
+	         $33f4 = VBlankInterruptHandler.noCarry
+	         $3409 = VBlankInterruptHandler.noIncSec
+	         $340c = VBlankInterruptHandler.end
+	EMPTY: $3411-$3fff ($0bef bytes)
+	TOTAL EMPTY: $120a bytes
 
 VRAM bank #0:
 	EMPTY: $8000-$8fff ($1000 bytes)

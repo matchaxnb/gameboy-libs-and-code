@@ -51,11 +51,14 @@ Change_AudioTrack:
     push de
     push af
     or a, $80; set dirty flag
-    ld [wMusicTrack], a
+    ldh [wMusicTrack], a
     ld hl, AudioChannelFlags
     ld bc, AudioChannelFlagsEnd - AudioChannelFlags
     ld d, 0
     call InitMemChunk
+    ldh a, [wAudioMasterClock]
+    and a, $7f
+    ldh [wAudioMasterClock], a
     pop af
     pop de
     pop bc
