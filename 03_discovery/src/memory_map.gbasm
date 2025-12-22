@@ -44,7 +44,6 @@ wFrameCounter60: db ; 0 <=  x <= 60
 wSecCounter: db
 
 ;; music engine
-wMusicTrack: db ; top bit is the "changed" flag, the rest is the track num
 AudioChannelFlags:
 wMusicFlagsCH1: db
 wMusicOffsetCH1: db
@@ -67,6 +66,6 @@ wMusicTimerCH4: db
 AudioChannelFlagsEnd:
 wAudioMasterClock: db
 wOverallOffsetPitch: db
-
+wMusicTrack: db ; top bit is the "changed" flag, the rest is the track num
 lastEntry: db
 ENDC
