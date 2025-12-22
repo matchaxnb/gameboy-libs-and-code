@@ -1,0 +1,132 @@
+IF !DEF(AUDIO_STATE_GBASM)
+DEF AUDIO_STATE_GBASM EQU 0
+SECTION FRAGMENT "PROGRAM", ROM0
+
+
+
+DEF DUR_DIATONIC_C_BASS = (DiatonicC_BassEnd - DiatonicC_Bass) / AUDIO_PKTSIZE
+DEF DUR_DIATONIC_C_TREBLE = (DiatonicC_TrebleEnd - DiatonicC_Treble) / AUDIO_PKTSIZE
+
+DEF DUR_PRELUDE_C_BASS = (BWV846_BassEnd - BWV846_Bass) / AUDIO_PKTSIZE
+DEF DUR_PRELUDE_C_TREBLE = (BWV846_TrebleEnd - BWV846_Treble) / AUDIO_PKTSIZE
+
+DEF DUR_FULLPRELUDE_C_BASS = (BWV846Full_BassEnd - BWV846Full_Bass) / AUDIO_PKTSIZE
+DEF DUR_FULLPRELUDE_C_TREBLE = (BWV846Full_TrebleEnd - BWV846Full_Treble) / AUDIO_PKTSIZE
+
+PRINTLN "Full prelude duration (bass/treble): {DUR_FULLPRELUDE_C_BASS} / {DUR_FULLPRELUDE_C_TREBLE}"
+
+AudioC1C2PlayTrack CH2, DiatonicC_Treble, DUR_DIATONIC_C_TREBLE, LP_DIATONIC_C_TREBLE
+AudioC1C2PlayTrack CH1, DiatonicC_Bass, DUR_DIATONIC_C_BASS, LP_DIATONIC_C_BASS
+
+AudioC1C2PlayTrack CH2, BWV846_Treble, DUR_PRELUDE_C_TREBLE, 0
+; AudioC1C2PlayTrack CH1, BWV846_Bass, DUR_PRELUDE_C_BASS, 0
+
+
+AudioC1C2PlayTrack CH2, BWV846Full_Treble, DUR_FULLPRELUDE_C_TREBLE, 0
+AudioC1C2PlayTrack CH1, BWV846Full_Bass, DUR_FULLPRELUDE_C_BASS, 0
+PRINTLN "Duration in packets Prelude in C (treble/bass): {DUR_PRELUDE_C_TREBLE} / {DUR_PRELUDE_C_BASS}"
+;AudioPlay_DiatonicC_Treble:
+;    ld d, 0
+;    ldh a, [wMusicTimerCH2] ;; load timer for CH1
+;    cp a, 0
+;    jr nz, .nostoTimerCH2   ;; if timer is not zero, decrease it and go away
+;    jr .loadCH2             ;; if it's 0, load CH1
+;.nostoTimerCH2
+;    dec a                   ;; decrease timer
+;    ldh [wMusicTimerCH2], a ;; store timer
+;    jr .noloadCH2           ;; and that's it, "return"
+;.loadCH2
+;    ; otherwise load a music chunk to the registers
+;    ; retrieve current offset from HRAM
+;    ldh a, [wMusicOffsetCH2]
+;    inc a
+;    ; compare it to the track duration
+;    cp a, DUR_DIATONIC_C_TREBLE + 1
+;    jr c, .noResetCH2
+;    ld a, LP_DIATONIC_C_TREBLE + 1
+;.noResetCH2
+;    ; store new offset to HRAM
+;    ldh [wMusicOffsetCH2], a
+;    ld e, a ; copy stored offset to e
+;    dec e; 
+;    ld hl, DiatonicC_Treble ;  hl <- base point of track
+;    REPT AUDIO_PKTSIZE    ;  hl = hl + (offset * AUDIO_PKTSIZE) 0: hl, 1: hl+5, 2: hl + 10, 3: hl + 15...
+;    add hl, de
+;    ENDR       ;; seek to right position in audio file
+;    AU_LoadIntoCH2        ;; load data into CH1
+;.noloadCH2
+;ret
+
+
+;; subroutine for AudioPlay
+;AudioPlay_DiatonicC_Bass:
+;    ld d, 0
+;    ldh a, [wMusicTimerCH1] ;; load timer for CH1
+;    cp a, 0
+;    jr nz, .nostoTimerCH1   ;; if timer is not zero, decrease it and go away
+;    jr .loadCH1             ;; if it's 0, load CH1
+;.nostoTimerCH1
+;    dec a                   ;; decrease timer
+;    ldh [wMusicTimerCH1], a ;; store timer
+;    jr .noloadCH1           ;; and that's it, "return"
+;.loadCH1
+;    ; otherwise load a music chunk to the registers
+;    ; retrieve current offset from HRAM
+;    ldh a, [wMusicOffsetCH1]
+;    inc a
+;    ; compare it to the track duration
+;    cp a, DUR_DIATONIC_C_BASS + 1
+;    jr c, .noResetCH1
+;    ld a, LP_DIATONIC_C_BASS + 1
+;.noResetCH1
+;    ; store new offset to HRAM
+;    ldh [wMusicOffsetCH1], a
+;    ld e, a ; copy stored offset to e
+;    dec e; 
+;    ld hl, DiatonicC_Bass ;  hl <- base point of track
+;    REPT AUDIO_PKTSIZE    ;  hl = hl + (offset * AUDIO_PKTSIZE) 0: hl, 1: hl+5, 2: hl + 10, 3: hl + 15...
+;    add hl, de
+;    ENDR       ;; seek to right position in audio file
+;    AU_LoadIntoCH1        ;; load data into CH1
+;    
+;.noloadCH1
+;ret
+
+; This handles Audio play
+; @param a: which track is active
+
+DEF AUDIO_EVERY_OTHER = %11
+AudioPlay:
+    push af
+    push de
+    ldh a, [wFrameCounter] ; load frame counter
+    and AUDIO_EVERY_OTHER
+    cp AUDIO_EVERY_OTHER
+    jr nz, .audioPlayEnd ;; if we are not in every other 4th frame, don't move
+    ldh a, [wMusicTrack]
+    cp a, TRK_PRELUDE
+    jp nz, .notPrelude
+    call AudioPlay_Prelude
+    jr .audioPlayEnd
+.notPrelude
+    cp a, TRK_DIATONIC_C
+    jp nz, .notDiatonicC
+    call AudioPlay_DiatonicC
+.notDiatonicC
+.audioPlayEnd
+    pop de
+    pop af
+ret
+
+AudioPlay_Prelude:
+    call AudioPlay_BWV846Full_Bass
+    call AudioPlay_BWV846Full_Treble
+ret
+
+AudioPlay_DiatonicC:
+    ;; call the subroutines for bass and treble
+    call AudioPlay_DiatonicC_Bass
+    call AudioPlay_DiatonicC_Treble
+ret
+
+ENDC ; include guard

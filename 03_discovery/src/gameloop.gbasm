@@ -3,9 +3,13 @@ DEF GAMELOOP_GBASM EQU 0
 DEF TROUBLESHOOT_ENGINE EQU 0
 SETCHARMAP ascii
 SECTION FRAGMENT "PROGRAM", ROM0
+StartGame:
+
+
 MainLoop:
   ; these can run outside of VBlank
 .nonVbl:
+  call AudioPlay
   call MutateNonVisualGameState
   call PollInput
   call SetInputState

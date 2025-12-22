@@ -78,7 +78,6 @@ StrCpyWithCleanup:
     push bc
     ;; extract length to copy
     ld a, [de]
-    ldh [$ff80+8], a
     cp a, 0
     jp z, .endStrcpy ; in case we have a 0-len string, exit
     dec a ; A is actually the pointer to the next elem so we should dec it

@@ -14,9 +14,9 @@ SECTION FRAGMENT "PROGRAM", ROM0
 VBlankInterruptHandler:
   ld hl, inVBlank
   ld [hl], 0xf0
-  ldh a, [wTimeCounter + 1]
+  ldh a, [wFrameCounter]
   inc a
-  ldh [wTimeCounter + 1], a
+  ldh [wFrameCounter], a
   cp a, 0
   jp nz, .noCarry
   ldh a, [wTimeCounter]

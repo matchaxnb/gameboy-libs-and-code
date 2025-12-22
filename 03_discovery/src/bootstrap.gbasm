@@ -22,8 +22,8 @@ SECTION "STARTUPCODE", ROM0[$150]
 
 EntryPoint:
 ; Shut down audio circuitry
-ld a, 0
-ld [rNR52], a
+ld a, AUDENA_ON
+ld [rAUDENA], a
 
 
 ;; reset RAM to 0
@@ -33,7 +33,7 @@ ld [rNR52], a
  call InitMemChunk
 ;
  ld hl, _HRAM
- ld bc, 20
+ ld bc, lastEntry - FirstHRAMEntry
  ld d, 0
  call InitMemChunk
 
@@ -96,6 +96,6 @@ ld [rLCDC], a
 
 ; the gameloop will takeover from there
 
-jp MainLoop
+jp StartGame
 
 ENDC

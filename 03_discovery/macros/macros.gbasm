@@ -142,6 +142,10 @@ MACRO CHECK_R16PAIR
   ASSERT (STRCMP("\2", "hl") == 0 || STRCMP("\2", "bc") == 0 || STRCMP("\2", "de") == 0 || STRCMP("\2", "af") == 0)
 ENDM
 
+MACRO CHECK_R16_NOAF
+  ASSERT (STRCMP("\1", "hl") == 0 || STRCMP("\1", "bc") == 0 || STRCMP("\1", "de") == 0)
+ENDM
+
 MACRO ldr16
   CHECK_R16PAIR_NOAFDST \1, \2
   if ( STRCMP("\1", "hl") == 0 )
@@ -155,6 +159,35 @@ MACRO ldr16
   endc
 ENDM
 
+MACRO ldaTo
+ CHECK_R16_NOAF \1
+ if ( STRCMP("\1", "hl") == 0)
+   ld l, a
+   ld h, 0
+ elif ( STRCMP("\1", "bc") == 0 ) 
+   ld c, a
+   ld b, 0
+ elif ( STRCMP("\1", "de") == 0 )
+   ld e, a
+   ld d, 0
+ else 
+   FAIL "Improper use of ldaTo"
+ endc
+ENDM
+
+MACRO ldaf
+ASSERT ( STRCMP("\1", "bc") == 0 || STRCMP("\1", "de") == 0 || STRCMP("\1", "hl") == 0 )
+if ( STRCMP("\1", "bc") == 0 )
+  ld h, b
+  ld l, c
+elif (STRCMP("\1", "de") == 0)
+  ld h, d
+  ld l, e
+else
+  ld h, a
+  ld l, f
+endc
+ENDM
 MACRO ldhl 
 ASSERT ( STRCMP("\1", "bc") == 0 || STRCMP("\1", "de") == 0 )
 if ( STRCMP("\1", "bc") == 0 )
@@ -178,13 +211,16 @@ endc
 ENDM
 
 MACRO ldde
-ASSERT ( STRCMP("\1", "hl") == 0 || STRCMP("\1", "bc") == 0)
+ASSERT ( STRCMP("\1", "hl") == 0 || STRCMP("\1", "bc") == 0 || STRCMP("\1", "af") == 0)
 if ( STRCMP("\1", "hl") == 0)
   ld d, h
   ld e, l
-else
+elif ( STRCMP("\1", "bc") == 0)
   ld d, b
   ld e, c
+else
+  ld d, a
+  ld e, 0
 endc
 ENDM
 
@@ -404,4 +440,4 @@ MACRO CHARVALOFFSET
   ELSE
     FAIL("Unsupported character \2 for \1")
   ENDC
-ENDM
+ENDM  

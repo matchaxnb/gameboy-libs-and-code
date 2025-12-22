@@ -2,6 +2,8 @@ IF !DEF(GAME_STATE_GBASM)
 DEF GAME_STATE_GBASM EQU 0
 SECTION FRAGMENT "PROGRAM", ROM0
 
+
+
 ; careful, this writes to VRAM
 SubstituteTiles:
     ret
@@ -17,16 +19,21 @@ MutateNonVisualGameState:
     ldh a, [wCurKeys]
     ld c, a ; C <- current keys
 
-
 .f60sec
+
     ;; things that happen every second
+
     ldh a, [wFrameCounter60]
     ld b, a ; B <- frame counter
     ; some state is refreshed only every 60 frames
     cp 60
     jr c, .f32
-    
+.labelRet
     ; some state is refreshed every 32 frames
+
+    
+    ; AU_SetCH1Data %01, 1, PERIOD_D4, 1, 1, 12, 1, 0
+    
 .f32
     ld a, b
     cpl

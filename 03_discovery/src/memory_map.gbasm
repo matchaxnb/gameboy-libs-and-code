@@ -30,13 +30,35 @@ SECTION "TileSets", VRAM[$9000]
 
 
 SECTION "HighVars", HRAM[$FF80]
+FirstHRAMEntry:
 IF (DEF(ENABLE_VBLANKINT) && ENABLE_VBLANKINT == 1)
 inVBlank: db
 ENDC
 wCurKeys: db
 wPrevKeys: db
-wTimeCounter: dw
+wTimeCounter: db
+wFrameCounter: db
 wFrameCounter60: db ; 0 <=  x <= 60
 wSecCounter: db
-lastEntry: dw
+; wMusicPointer: dw
+wMusicTrack: db
+wMusicFlagsCH1: db
+wMusicOffsetCH1: db
+wMusicTimerCH1: db
+
+wMusicFlagsCH2: db
+wMusicOffsetCH2: db
+wMusicTimerCH2: db
+
+
+wMusicFlagsCH3: db
+wMusicOffsetCH3: db
+wMusicTimerCH3: db
+
+
+wMusicFlagsCH4: db
+wMusicOffsetCH4: db
+wMusicTimerCH4: db
+
+lastEntry: db
 ENDC

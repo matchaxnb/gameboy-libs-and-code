@@ -1,17 +1,16 @@
 INCLUDE "defines/hardware.inc"
 INCLUDE "defines/palettes.inc"
 INCLUDE "src/assets.gbasm"
-INCLUDE "src/audio_assets.gbasm"
 INCLUDE "src/charmap.gbasm"
 INCLUDE "macros/macros.gbasm"
+INCLUDE "macros/audiomacros.gbasm"
+INCLUDE "src/audio_assets.gbasm"
 INCLUDE "src/memory_map.gbasm"
 INCLUDE "src/constants.gbasm" ; must come after assets
 INCLUDE "src/bootstrap.gbasm"
 INCLUDE "src/game_state.gbasm"
-
+INCLUDE "src/audio_state.gbasm"
 INCLUDE "src/gameloop.gbasm"
-
-
 INCLUDE "src/tables.gbasm"
 INCLUDE "src/low_level.gbasm"
 
