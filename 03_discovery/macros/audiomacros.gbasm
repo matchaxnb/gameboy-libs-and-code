@@ -33,6 +33,66 @@ ENDM
 MACRO AU_LoadIntoCH2
 AU_LoadIntoCH1orCH2 CH2
 ENDM
+
+; @param \1 %bb duty cycle
+MACRO AU_SetDutyCycleCH1OrCH2
+ASSERT  STRCMP("\1", "CH1") * STRCMP("\1", "CH2") = 0
+ASSERT  STRCMP("\2", "hl") == 0
+if (STRCMP("\1", "CH1") == 0)
+DEF _BASE_REG = rAUD1LEN
+else
+DEF _BASE_REG = rAUD2LEN
+ENDC
+ld a, \1 << 6
+ldh [_BASE_REG], a
+ENDM
+
+; load a compact music chunk into CH1 or CH2
+; read from register \2
+; @param \1: CH1 or CH2
+; @param \2: hl
+MACRO AU_LoadCompactMusicIntoCH1OrCH2
+ASSERT  STRCMP("\1", "CH1") * STRCMP("\1", "CH2") = 0
+ASSERT  STRCMP("\2", "hl") == 0
+if (STRCMP("\1", "CH1") == 0)
+DEF _BASE_REG = rAUD1LEN
+else
+DEF _BASE_REG = rAUD2LEN
+ENDC
+;; first load duration into right register
+ld a, [\2]
+ldh [wMusicTimer\1], a
+inc \2
+;; now handle pitch
+ld a, [\2] ; now pitch offset is in a 
+ldr16 bc, \2 ; copy to bc because we need to use hl
+ld hl, PitchesTable + 1 ; we want that offset because we will reverse the word
+add hl, bc
+add hl, bc
+ld a, [hld]
+ldh [_BASE_REG + 3], a ; <- bottom period bits
+ld a, [hl] ; a <- top period bits
+or a, %10000000 ; set trigger, no length enable
+ldh [_BASE_REG + 4], a ; write NR14
+ENDM
+
+; macro to define a more compact music format
+; assumes that the synth parameters are already set
+; @param \1 pitch offset (in words) relative to PitchesTable (starts at C2, ends at Gb5)
+; @param \2 duration (in music ticks)
+; stored in 2 bytes (1 word)
+MACRO AU_CompactMusic
+    ASSERT (\1 >= 0 && \1 < ((PitchesTableEnd - PitchesTable) / 2))
+    ASSERT \2
+    PRINT "max pitch is "
+    PRINT "PitchesTableEnd:"
+    PRINTLN PitchesTableEnd
+    PRINT "PitchesTable:"
+    PRINTLN PitchesTable
+    PRINTLN ((PitchesTableEnd - PitchesTable) / 2)
+    db \2
+    db \1
+ENDM
 ; macro to define words in ROM musically
 ; @param \1 wave pattern duty 
 ; %00 -> 12.5%; %01 -> 25%, %10 -> 50%, %11 -> 75%

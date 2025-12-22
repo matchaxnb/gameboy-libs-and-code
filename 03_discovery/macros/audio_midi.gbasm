@@ -324,3 +324,4 @@ DEF NOTE_Gb9 = MIDI_126
 DEF MIDI_127 = 12543.850
 DEF NOTE_G9  = MIDI_127
 ;; End of generated list of MIDI notes
+INCLUDE "src/tables_audio.gbasm"

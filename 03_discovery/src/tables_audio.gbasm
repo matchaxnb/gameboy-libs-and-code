@@ -1,0 +1,48 @@
+IF !DEF(TABLES_AUDIO_GBASM)
+DEF TABLES_AUDIO_GBASM = 0
+PitchesTable:
+dw  PERIOD_C2
+dw  PERIOD_Db2 
+dw  PERIOD_D2 
+dw  PERIOD_Eb2 
+dw  PERIOD_E2 
+dw  PERIOD_F2 
+dw  PERIOD_Gb2 
+dw  PERIOD_G2 
+dw  PERIOD_Ab2 
+dw  PERIOD_A2 
+dw  PERIOD_Bb2 
+dw  PERIOD_B2 
+dw  PERIOD_C3 
+dw  PERIOD_Db3 
+dw  PERIOD_D3 
+dw  PERIOD_Eb3 
+dw  PERIOD_E3 
+dw  PERIOD_F3 
+dw  PERIOD_Gb3 
+dw  PERIOD_G3 
+dw  PERIOD_Ab3 
+dw  PERIOD_A3 
+dw  PERIOD_Bb3 
+dw  PERIOD_B3 
+dw  PERIOD_C4 
+dw  PERIOD_Db4 
+dw  PERIOD_D4 
+dw  PERIOD_Eb4 
+dw  PERIOD_E4 
+dw  PERIOD_F4 
+dw  PERIOD_Gb4 
+dw  PERIOD_G4 
+dw  PERIOD_Ab4 
+dw  PERIOD_A4 
+dw  PERIOD_Bb4 
+dw  PERIOD_B4 
+dw  PERIOD_C5 
+dw  PERIOD_Db5 
+dw  PERIOD_D5 
+dw  PERIOD_Eb5 
+dw  PERIOD_E5 
+dw  PERIOD_F5 
+dw  PERIOD_Gb5
+PitchesTableEnd:
+ENDC
