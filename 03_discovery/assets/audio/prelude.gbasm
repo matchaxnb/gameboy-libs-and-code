@@ -1,7 +1,3 @@
-;; just the 2 first measures of Bach's BWV 846
-
-SECTION FRAGMENT "MUSIC", ROM0
-
 DEF CURFILE EQUS "prelude.gbasm"
 DEF BWV846_NOTEVOL = 15
 DEF BWV846_ENVSPD  = 6

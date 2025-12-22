@@ -1,10 +1,3 @@
-;; just the 2 first measures of Bach's BWV 846
-
-SECTION FRAGMENT "MUSIC", ROM0
-
-; === BWV 846 in C major — Bass (first 4 measures, packed) ===
-; duty=%10, trigger=1, length_enable=0, env_down, env_speed=BWV846_ENVSPD
-
 
 
 DiatonicC:

@@ -3,20 +3,6 @@
 ;; periods based on frequency
 ; Reference is as always Pandocs
 ; https://gbdev.io/pandocs/Audio_Registers.html
-/*
-equation:
-
-    131072 / (2048 - period) = H
-    so, H * (2048 - period) = 131072
-
-*/
-DEF PERIOD_DIVIDER = 4194304
-MACRO HZ_TO_PERIOD_CH1
- 
-ENDM
-
-
-
 
 ;; List of MIDI notes in RGBDS macro format
 DEF MIDI_0 = 8.176
@@ -324,4 +310,3 @@ DEF NOTE_Gb9 = MIDI_126
 DEF MIDI_127 = 12543.850
 DEF NOTE_G9  = MIDI_127
 ;; End of generated list of MIDI notes
-INCLUDE "src/tables_audio.gbasm"

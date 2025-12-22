@@ -1,0 +1,33 @@
+
+MyMotif:
+MyMotif_Bass:
+
+PianoNoteShort D3, 3
+PianoNoteShort F3, 3
+PianoNoteShort A3, 3
+PianoNoteShort G3, 3
+PianoNoteShort E3, 3
+;PianoNoteShort E2, 2
+;PianoNoteShort G2, 2
+;PianoNoteShort B2, 2
+;PianoNoteShort F2, 2
+;PianoNoteShort A2, 2
+;
+
+MyMotif_BassEnd:
+
+MyMotif_Treble:
+PianoNoteShort D4, 3
+PianoNoteShort F4, 3
+PianoNoteShort A4, 3
+PianoNoteShort E4, 3
+PianoNoteShort G4, 3
+
+
+MyMotif_TrebleEnd:
+
+
+; === BWV 846 in C major — Treble (first 4 measures, packed) ===
+; duty=%01, trigger=1, length_enable=0, env_down, env_speed=BWV846_ENVSPD
+
+
