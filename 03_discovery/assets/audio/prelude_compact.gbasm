@@ -1,207 +1,193 @@
-IF DEF(PIANO_DUTY_CYCLE)
-PURGE PIANO_DUTY_CYCLE
-ENDC
-
-IF DEF(PIANO_INITIAL_VOL)
-PURGE PIANO_INITIAL_VOL
-ENDC
-
-IF DEF(CONVERSION_RATIO)
-PURGE CONVERSION_RATIO
-ENDC
-
-IF DEF(PIANO_ENVSPD)
-PURGE PIANO_ENVSPD
-ENDC
-
+DEF CONVERSION_RATIO = 2
 ;; parameters for bass
-DEF PIANO_DUTY_CYCLE = %10
-DEF PIANO_INITIAL_VOL = 12
-DEF CONVERSION_RATIO = 3
-DEF PIANO_ENVSPD = 7
-
+;  0 -> C
+; -12 -> C; -11 -> Db; ...
+;  1 -> Db; 2 -> D; 3 -> E; 4 -> Fb; 5 -> F; 6 -> Gb; 7 -> G; 8 -> Ab; 9 -> A
+; 10 -> Bb; 11 -> B; 12 -> C
+DEF OVERALL_TRANSPOSE = -12
 BWV846Compact_Bass:
-
+AU_CompactAdjustment %11, 13, 0, 2
 DEBUGPLN "Bass: BAR 1"
 REPT 2
-    PianoNoteShort C3, 1
-    PianoNoteShort E3, 6
+    PianoNoteShort C4, 1
+    PianoNoteShort E4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 2
 DEBUGPLN "Bass: BAR 2"
 REPT 2
-    PianoNoteShort C3, 1
-    PianoNoteShort D3, 6
+    PianoNoteShort C4, 1
+    PianoNoteShort D4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 3
 DEBUGPLN "Bass: BAR 3"
 REPT 2
-    PianoNoteShort B2, 1
-    PianoNoteShort D3, 6
+    PianoNoteShort B3, 1
+    PianoNoteShort D4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 4
 DEBUGPLN "Bass: BAR 4"
 REPT 2
-    PianoNoteShort C3, 1
-    PianoNoteShort E3, 6
+    PianoNoteShort C4, 1
+    PianoNoteShort E4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 5
 DEBUGPLN "Bass: BAR 5"
 REPT 2
-    PianoNoteShort C3, 1
-    PianoNoteShort E3, 6
+    PianoNoteShort C4, 1
+    PianoNoteShort E4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 6
 DEBUGPLN "Bass: BAR 6"
 REPT 2
-    PianoNoteShort C3, 1
-    PianoNoteShort D3, 6
+    PianoNoteShort C4, 1
+    PianoNoteShort D4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 7
 DEBUGPLN "Bass: BAR 7"
 REPT 2
-    PianoNoteShort B2, 1
-    PianoNoteShort D3, 6
+    PianoNoteShort B3, 1
+    PianoNoteShort D4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 8
 DEBUGPLN "Bass: BAR 8"
 REPT 2
-    PianoNoteShort B2, 1
-    PianoNoteShort C3, 6
+    PianoNoteShort B3, 1
+    PianoNoteShort C4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 9
 DEBUGPLN "Bass: BAR 9"
 REPT 2
-    PianoNoteShort A2, 1
-    PianoNoteShort C3, 6
+    PianoNoteShort A3, 1
+    PianoNoteShort C4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 10
 DEBUGPLN "Bass: BAR 10"
 REPT 2
-    PianoNoteShort D2, 1
-    PianoNoteShort Gb2, 6
+    PianoNoteShort D3, 1
+    PianoNoteShort Gb3, 6
     PianoRestShort 1
 ENDR
 
 ; bar 11
 DEBUGPLN "Bass: BAR 11"
 REPT 2
-    PianoNoteShort G2, 1
-    PianoNoteShort B2, 6
+    PianoNoteShort G3, 1
+    PianoNoteShort B3, 6
     PianoRestShort 1
 ENDR
 
 ; bar 12
 DEBUGPLN "Bass: BAR 12"
 REPT 2
-    PianoNoteShort G2, 1
-    PianoNoteShort Bb2, 6
+    PianoNoteShort G3, 1
+    PianoNoteShort Bb3, 6
     PianoRestShort 1
 ENDR
 
 ; bar 13
 DEBUGPLN "Bass: BAR 13"
 REPT 2
-    PianoNoteShort F2, 1
-    PianoNoteShort A2, 6
+    PianoNoteShort F3, 1
+    PianoNoteShort A3, 6
     PianoRestShort 1
 ENDR
 
 ; bar 14
 DEBUGPLN "Bass: BAR 14"
 REPT 2
-    PianoNoteShort F2, 1
-    PianoNoteShort Ab2, 6
+    PianoNoteShort F3, 1
+    PianoNoteShort Ab3, 6
     PianoRestShort 1
 ENDR
 
 ; bar 15
 DEBUGPLN "Bass: BAR 15"
 REPT 2
-    PianoNoteShort E2, 1
-    PianoNoteShort G2, 6
+    PianoNoteShort E3, 1
+    PianoNoteShort G3, 6
     PianoRestShort 1
 ENDR
 
 ; bar 16
 DEBUGPLN "Bass: BAR 16"
 REPT 2
-    PianoNoteShort E2, 1
-    PianoNoteShort F2, 6
+    PianoNoteShort E3, 1
+    PianoNoteShort F3, 6
     PianoRestShort 1
 ENDR
-
+;; play louder
+AU_CompactAdjustment %10, 15, 0, 6
 ; bar 17
 DEBUGPLN "Bass: BAR 17"
 REPT 2
-    PianoNoteShort D2, 1
-    PianoNoteShort F2, 6
+    PianoNoteShort D3, 1
+    PianoNoteShort F3, 6
     PianoRestShort 1
 ENDR
 
 ; bar 18
 DEBUGPLN "Bass: BAR 18"
 REPT 2
-    PianoNoteShort G2, 1
-    PianoNoteShort D3, 6
+    PianoNoteShort G3, 1
+    PianoNoteShort D4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 19
 DEBUGPLN "Bass: BAR 19"
 REPT 2
-    PianoNoteShort C3, 1
-    PianoNoteShort E3, 6
+    PianoNoteShort C4, 1
+    PianoNoteShort E4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 20
 DEBUGPLN "Bass: BAR 20"
 REPT 2
-    PianoNoteShort C3, 1
-    PianoNoteShort G3, 6
+    PianoNoteShort C4, 1
+    PianoNoteShort G4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 21
 DEBUGPLN "Bass: BAR 21"
 REPT 2
-    PianoNoteShort F2, 1
-    PianoNoteShort F3, 6
+    PianoNoteShort F3, 1
+    PianoNoteShort F4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 22
 DEBUGPLN "Bass: BAR 22"
 REPT 2
-    PianoNoteShort Gb2, 1
-    PianoNoteShort C3, 6
+    PianoNoteShort Gb3, 1
+    PianoNoteShort C4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 23
 DEBUGPLN "Bass: BAR 23"
 REPT 2
-    PianoNoteShort Ab2, 1
-    PianoNoteShort F3, 6
+    PianoNoteShort Ab3, 1
+    PianoNoteShort F4, 6
     PianoRestShort 1
 ENDR
 
@@ -209,64 +195,64 @@ ENDR
 ; bar 24
 DEBUGPLN "Bass: BAR 24"
 REPT 2
-    PianoNoteShort B2, 1
-    PianoNoteShort F3, 6
+    PianoNoteShort B3, 1
+    PianoNoteShort F4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 25
 DEBUGPLN "Bass: BAR 25"
 REPT 2
-    PianoNoteShort G2, 1
-    PianoNoteShort E3, 6
+    PianoNoteShort G3, 1
+    PianoNoteShort E4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 26
 DEBUGPLN "Bass: BAR 26"
 REPT 2
-    PianoNoteShort G2, 1
-    PianoNoteShort D3, 6
+    PianoNoteShort G3, 1
+    PianoNoteShort D4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 27
 DEBUGPLN "Bass: BAR 27"
 REPT 2
-    PianoNoteShort G2, 1
-    PianoNoteShort D3, 6
+    PianoNoteShort G3, 1
+    PianoNoteShort D4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 28
 DEBUGPLN "Bass: BAR 28"
 REPT 2
-    PianoNoteShort G2, 1
-    PianoNoteShort Eb3, 6
+    PianoNoteShort G3, 1
+    PianoNoteShort Eb4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 29
 DEBUGPLN "Bass: BAR 29"
 REPT 2
-    PianoNoteShort G2, 1
-    PianoNoteShort E3, 6
+    PianoNoteShort G3, 1
+    PianoNoteShort E4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 30
 DEBUGPLN "Bass: BAR 30"
 REPT 2
-    PianoNoteShort G2, 1
-    PianoNoteShort D3, 6
+    PianoNoteShort G3, 1
+    PianoNoteShort D4, 6
     PianoRestShort 1
 ENDR
 
 ; bar 31
 DEBUGPLN "Bass: BAR 31"
 REPT 2
-    PianoNoteShort G2, 1
-    PianoNoteShort D3, 6
+    PianoNoteShort G3, 1
+    PianoNoteShort D4, 6
     PianoRestShort 1
 ENDR
 
@@ -274,31 +260,26 @@ ENDR
 ; bar 32
 DEBUGPLN "Bass: BAR 32"
 REPT 2
-    PianoNoteShort B2, 1
-    PianoNoteShort C3, 7
+    PianoNoteShort B3, 1
+    PianoNoteShort C4, 7
 ENDR
 
 ; bar 33
 
+AU_CompactAdjustment %10, 15, 0, 0
 
-DEF PIANO_ENVSPD = 0
-
-PianoNoteShort C3, 32
+PianoNoteShort C4, 16
 
 BWV846Compact_BassEnd:
 
 
 
-;; parameters for bass
-PURGE PIANO_DUTY_CYCLE
-PURGE PIANO_INITIAL_VOL
-PURGE PIANO_ENVSPD
-DEF PIANO_DUTY_CYCLE = %00
-DEF PIANO_INITIAL_VOL = 13
-DEF PIANO_ENVSPD = 5
+;; parameters for treble
 
 BWV846Compact_Treble:
+AU_CompactAdjustment %00, 10, 0, 1
 
+DEF OVERALL_TRANSPOSE = 0
 
 ; bar 1
 DEBUGPLN "Treble: BAR 1"
@@ -465,6 +446,9 @@ REPT 2
         PianoNoteShort E4, 1
     ENDR
 ENDR
+
+; play louder
+AU_CompactAdjustment %00, 15, 0, 2
 
 ; bar 16
 DEBUGPLN "Treble: BAR 16"
@@ -656,13 +640,10 @@ REPT 2
 ENDR
 
 ; BAR 33
+AU_CompactAdjustment %00, 13, 0, 0
 
-IF DEF(PIANO_ENVSPD)
-PURGE PIANO_ENVSPD
-ENDC
-DEF PIANO_ENVSPD = 0
+PianoNoteShort E4, 16
 
-    PianoNoteShort E4, 32
-
+DEF OVERALL_TRANSPOSE = 0
 
 BWV846Compact_TrebleEnd:

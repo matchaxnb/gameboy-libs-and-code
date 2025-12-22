@@ -2,7 +2,6 @@
 
 ; poll input
 ; @returns input state in register a
-; 
 PollInput:
     ;; poll buttons
     ld a, P1F_GET_BTN
@@ -30,35 +29,22 @@ ret
 
 ; based on the polled input, update the various objects
 ; @input register A, containing the input state
-; modifies registers B, C, D, E, H as work registers
+; modifies registers B, C as work registers
 ; B: previously polled keys [stored in wPrevKeys]
 ; C: newly polled keys [stored in wCurKeys]
-; D: what keys are newly pressed  [stored in wNewlyPressed]
-; E: what keys are newly released [stored in wNewlyReleased]
 SetInputState:
     ;; store current and previous input status
-    ld c, a ; C <- A (current input status)
+    ld c, a ; C <- A (current input status as polled)
     ldh a, [wCurKeys] ; A <- (previous input status)
     ld b, a ; B <- previous input status
-    ldh [wPrevKeys], a ; $prevKeys <- old curKeys
+    ldh [wPrevKeys], a ; prevKeys stored
     ld a, c ; A <- current input status
-    ldh [wCurKeys], a ; $curKeys <- new input status
-    ;; compute changes
-    ld a, b ; A <- previous input status
-    xor a, c ; A <- B ^ C (toggle mask, what has changed)
-    ld h, a ; H <- toggle mask, 1 means the key has changed state
-    ;; what is newly pressed
-    ld a, c ; A <- current input state
-    and a, h ; A <- A & what has changed
-
-    ld [wNewlyPressed], a
-    ld d, a ; D <- newly pressed
-    ;; what is newly released
-    ld a, c ; A <- current input state
-    cpl ; what is NOT pressed
-    and a, h; what has changed and is not pressed
-    ld [wNewlyReleased], a
-    ld e, a
+    ldh [wCurKeys], a ; wCurKeys <- current input status
+    xor a, b ; a <- cur ^ old what keys changed between wCurKeys and wPrevKeys
+    and a, c ; a <- a & pressed i.e. newly pressed
+    ldh [wNewlyPressed], a
+    ld a, c  ; a <- wCurKeys
+    cpl      ; a <- ~wCurKeys
+    and a, b ; a <- ~wCurKeys & wPrevKeys    
+    ldh [wNewlyReleased], a
 ret
-
-

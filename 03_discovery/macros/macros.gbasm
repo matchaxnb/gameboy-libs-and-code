@@ -440,4 +440,36 @@ MACRO CHARVALOFFSET
   ELSE
     FAIL("Unsupported character \2 for \1")
   ENDC
-ENDM  
+ENDM
+
+; @param \1 Function label
+; @param \2 Memory location
+; mutates a
+MACRO StoreFunctionPointer 
+  ld a, HIGH(\1)
+  ld [\2], a
+  ld a, LOW(\1)
+  ld [\2 + 1], a
+ENDM
+
+; @param \1 Memory location
+; call the function pointer
+MACRO CallFunctionPointer
+ld bc, .postFP\@
+push bc
+ld a, [\1]
+ld h, a
+ld a, [\1 +1]
+ld l, a
+jp hl
+.postFP\@
+ENDM
+
+DEF MASK_INPUT_D = %10000000
+DEF MASK_INPUT_U = %01000000
+DEF MASK_INPUT_L = %00100000
+DEF MASK_INPUT_R = %00010000
+DEF MASK_INPUT_S = %00001000
+DEF MASK_INPUT_T = %00000100 ; select
+DEF MASK_INPUT_B = %00000010
+DEF MASK_INPUT_A = %00000001

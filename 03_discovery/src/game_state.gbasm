@@ -13,18 +13,19 @@ _RefreshStateMachine:
 
     ret
 MutateNonVisualGameState:
+    ;; reminder: input bits: [Down Up Left Right Start Select B A]
     push af
     push bc
     push de
+    ld a, [wNewlyPressed]
+    ld e, a ; E <- newly pressed keys
     ldh a, [wCurKeys]
     ld c, a ; C <- current keys
-
-.f60sec
-
-    ;; things that happen every second
-
     ldh a, [wFrameCounter60]
     ld b, a ; B <- frame counter
+
+.f60sec
+    ;; things that happen every second
     ; some state is refreshed only every 60 frames
     cp 60
     jr c, .f32
@@ -69,7 +70,78 @@ MutateNonVisualGameState:
     call StrCpyWithCleanup ; hl: Target, de: Source, c: Lengthexpected
 
 .after4Frames
-    
+.always
+    ldh a, [wNewlyReleased]
+    ld c, a
+    bit PADB_RIGHT, c
+    jr z, .postIncPitch
+    .incPitch
+        ldh a, [wOverallOffsetPitch]
+        cp a, 12
+        jr nc, .postIncPitch ; if wOverallOffsetPitch >= 12, no further
+        inc a
+        ldh [wOverallOffsetPitch], a
+    .postIncPitch
+    bit PADB_LEFT, c
+    jr z, .postDecPitch
+    .decPitch
+        ldh a, [wOverallOffsetPitch]
+        cp a, 0
+        jr z, .postDecPitch ; reject overflow
+        dec a
+        ldh [wOverallOffsetPitch], a
+    .postDecPitch
+    bit PADB_UP, c
+    jr z, .postNextTrack
+    .nextTrack
+        ldh a, [wMusicTrack]
+        cp a, MAX_TRACKNUM
+        jr nc, .postNextTrack
+        inc a
+        call Change_AudioTrack
+    .postNextTrack
+    bit PADB_DOWN, c
+    jr z, .postPrevTrack
+    .prevTrack
+        ldh a, [wMusicTrack]
+        cp a, 0
+        jr z, .postPrevTrack
+        dec a
+        call Change_AudioTrack
+    .postPrevTrack
+    bit PADB_SELECT, c
+    jr z, .postResetTrack
+    .resetTrack
+        call Change_AudioTrack
+    .postResetTrack
+    bit PADB_START, c
+    jr z, .postPlayPauseTrack
+    .playPauseTrack
+        ld a, [wAudioMasterClock]
+        xor a, %10000000 ; flip top bit
+        ld [wAudioMasterClock], a
+    .postPlayPauseTrack
+
+    bit PADB_A, c
+    jr z, .postIncreaseMasterClockSpeed
+    .increaseMasterClockSpeed
+        ld a, [wAudioMasterClock]
+        cp a, 0
+        jr z, .postIncreaseMasterClockSpeed
+        srl a
+        ld [wAudioMasterClock], a
+    .postIncreaseMasterClockSpeed
+    bit PADB_B, c
+    jr z, .postDecreaseMasterClockSpeed
+    .decreaseMasterClockSpeed
+        ld a, [wAudioMasterClock]
+        cp a, %01111111
+        jr z, .postDecreaseMasterClockSpeed
+        sla a
+        or a, 1
+        ld [wAudioMasterClock], a
+    .postDecreaseMasterClockSpeed
+
     pop de
     pop bc
     pop af

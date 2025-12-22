@@ -5,14 +5,18 @@ SETCHARMAP ascii
 SECTION FRAGMENT "PROGRAM", ROM0
 StartGame:
 
+ld a, %11
+ld [wAudioMasterClock], a
+ld a, 0
+call Change_AudioTrack
 
 MainLoop:
   ; these can run outside of VBlank
 .nonVbl:
   call AudioPlay
+  call PollInput     ; chain these 2 calls
+  call SetInputState ; chain these 2 calls
   call MutateNonVisualGameState
-  call PollInput
-  call SetInputState
   
   
   ;; now all state that can be mutated outside of VBlank is handled

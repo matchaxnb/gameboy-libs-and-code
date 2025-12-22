@@ -34,5 +34,5 @@ AU_DataPacked %11, 12, PERIOD_C3, 1, 0, 10, 0, 4, $01  ; q.
 DiatonicC_TrebleEnd:
 
 DiatonicCAlt_Bass:
-AU_CompactMusic 0, 4
+
 DiatonicCAlt_BassEnd:

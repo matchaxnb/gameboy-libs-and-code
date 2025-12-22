@@ -1,28 +1,34 @@
 
+PURGE CONVERSION_RATIO
+DEF CONVERSION_RATIO = 1
 MyMotif:
 MyMotif_Bass:
+    AU_CompactAdjustment %10, 13, 0, 4
+    PianoRest 2
+    REPT 4
+        PianoNoteShort D3, 4
+        PianoNoteShort F3, 4
+        PianoNoteShort A3, 4
+        AU_CompactAdjustment %10, 13, 0, 1
+        PianoNoteShort G3, 4
+        PianoNoteShort E3, 4
+    ENDR
+    AU_CompactAdjustment %10, 13, 0, 3
 
-PianoNoteShort D3, 3
-PianoNoteShort F3, 3
-PianoNoteShort A3, 3
-PianoNoteShort G3, 3
-PianoNoteShort E3, 3
-;PianoNoteShort E2, 2
-;PianoNoteShort G2, 2
-;PianoNoteShort B2, 2
-;PianoNoteShort F2, 2
-;PianoNoteShort A2, 2
-;
 
 MyMotif_BassEnd:
 
 MyMotif_Treble:
-PianoNoteShort D4, 3
-PianoNoteShort F4, 3
-PianoNoteShort A4, 3
-PianoNoteShort E4, 3
-PianoNoteShort G4, 3
-
+    AU_CompactAdjustment %00, 8, 0, 2
+    PianoRest 2
+    REPT 4
+        PianoNoteShort D4, 4
+        PianoNoteShort F4, 4
+        PianoNoteShort A4, 4
+        AU_CompactAdjustment %00, 8, 0, 4
+        PianoNoteShort E4, 4
+        PianoNoteShort G4, 4
+    ENDR
 
 MyMotif_TrebleEnd:
 
