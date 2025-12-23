@@ -1,6 +1,0 @@
-INCLUDE "libs/offsetting.gbasm"
-INCLUDE "libs/memory.gbasm"
-INCLUDE "libs/tilemaps.gbasm"
-INCLUDE "libs/tiles.gbasm"
-INCLUDE "libs/input.gbasm"
-INCLUDE "libs/strings.gbasm"

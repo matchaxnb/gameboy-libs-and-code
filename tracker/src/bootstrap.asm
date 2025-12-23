@@ -15,7 +15,7 @@ SECTION "HEADER", ROM0[$0100]
 
 SECTION FRAGMENT "PROGRAM", ROM0
 Libraries:
-INCLUDE "libs/functions.gbasm"
+INCLUDE "libs/functions.asm"
 EndLibraries:
 
 SECTION "STARTUPCODE", ROM0[$150]

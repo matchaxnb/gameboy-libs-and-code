@@ -1,4 +1,4 @@
-; generated using export-tilemap-to-gbasm.lua
+; generated using export-tilemap-to-asm.lua
 ; source layer: Title Screen
 ; parameters
 ;; pad to 32 rows: false

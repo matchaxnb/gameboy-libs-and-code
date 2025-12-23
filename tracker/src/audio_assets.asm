@@ -10,9 +10,9 @@ DEF LP_DIATONIC_C_BASS = 2
 DEF LP_DIATONIC_C_TREBLE = 2
 SECTION "MUSIC", ROM0[$800]
 
-INCLUDE "assets/audio/prelude.gbasm"
-INCLUDE "assets/audio/diatonic_c.gbasm"
-INCLUDE "assets/audio/prelude_full.gbasm"
-INCLUDE "assets/audio/prelude_compact.gbasm"
-INCLUDE "assets/audio/mymotif.gbasm"
+INCLUDE "assets/audio/prelude.asm"
+INCLUDE "assets/audio/diatonic_c.asm"
+INCLUDE "assets/audio/prelude_full.asm"
+INCLUDE "assets/audio/prelude_compact.asm"
+INCLUDE "assets/audio/mymotif.asm"
 ENDC

@@ -1,0 +1,6 @@
+INCLUDE "libs/offsetting.asm"
+INCLUDE "libs/memory.asm"
+INCLUDE "libs/tilemaps.asm"
+INCLUDE "libs/tiles.asm"
+INCLUDE "libs/input.asm"
+INCLUDE "libs/strings.asm"

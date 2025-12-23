@@ -1,4 +1,4 @@
-INCLUDE "macros/audio_midi.gbasm"
+INCLUDE "macros/audio_midi.asm"
 
 MACRO AU_LoadIntoCH1orCH2
 ASSERT STRCMP("\1", "CH1") * STRCMP("\1", "CH2") == 0
@@ -52,7 +52,7 @@ ENDM
 ; @param \1 wave pattern duty 
 ; %00 -> 12.5%; %01 -> 25%, %10 -> 50%, %11 -> 75%
 ; @param \2 length (0-63) (ignored if length is set to false (smaller is longer))
-; @param \3 period (0-2047 or one of the constants XXX_PERIOD in audio_midi.gbasm)
+; @param \3 period (0-2047 or one of the constants XXX_PERIOD in audio_midi.asm)
 ; @param \4 trigger immediately (0-1)
 ; @param \5 enable length (0-1)
 ; @param \6 initial volume (0-15)

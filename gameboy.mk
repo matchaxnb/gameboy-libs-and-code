@@ -15,7 +15,7 @@ clean:
 	find . -name '*.2bpp.pal' -delete
 	find . -name '*.2bpp.tilemap' -delete
 
-%.o: %.gbasm ../hardware.inc
+%.o: %.asm ../hardware.inc
 	@echo Compiling $@ from $<
 	pwd
 	$(RGBASM) $(RGBASM_ARGS) -o $@ $<
@@ -24,7 +24,7 @@ clean:
 	@echo About to output $@ from $<
 	rgblink -m $(patsubst %.sym,%.tbl,$@) -n $@ $<
 
-%.gb: %.o %.sym */*.gbasm *.gbasm
+%.gb: %.o %.sym */*.asm *.asm
 	@echo About to output $@
 	rgblink -m $(patsubst %.gb,%.map,$@) -o $@ $<
 	rgbfix -v -p 0xff $@

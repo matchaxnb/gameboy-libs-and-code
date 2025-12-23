@@ -11,6 +11,6 @@ TileData:
 TileDataEnd:
 TilesROMEnd:
 TileMaps:
-INCLUDE "assets/screens/titlescreen.gbasm"
+INCLUDE "assets/screens/titlescreen.asm"
 TileMapsEnd:
 ENDC
