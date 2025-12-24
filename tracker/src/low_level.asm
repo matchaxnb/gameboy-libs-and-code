@@ -10,7 +10,25 @@ push de
 push hl
 jp VBlankInterruptHandler
 
+SECTION "STATINT", ROM0[$0048]
+push af
+jp StatInterruptHandler
+
 SECTION FRAGMENT "PROGRAM", ROM0
+StatInterruptHandler:
+  ;; teehee, magic
+  ldh a, [rLY]
+  srl a
+  and %10000
+  ld a, DEFAULT_PALETTE
+  jr z, .alt
+  cpl
+.alt
+  ld [rBGP], a
+
+.out
+  pop af
+reti  
 VBlankInterruptHandler:
   ld hl, inVBlank
   ld [hl], 0xf0
@@ -40,6 +58,9 @@ VBlankInterruptHandler:
   inc a
   ldh [wFrameCounter60], a
 .end:
+  ld a, DEFAULT_PALETTE
+  ld [rBGP], a
+
   ; restore state
   pop hl
   pop de

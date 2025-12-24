@@ -41,7 +41,7 @@ MutateNonVisualGameState:
     and a, %11111
     cp %11111
     jr z, .f16
-    call _HandleSpeedAndMovement
+    call _HandleTrackerInput
 .f16
     ; some state is refreshed every 16 frames
     ld a, b
@@ -61,13 +61,12 @@ MutateNonVisualGameState:
     and a, %11 ; %11
     xor %11
     jr nz, .after4Frames
-    ld a, [GameState.velocity]
-    ld hl, SpeedTextDB
-    call GetNthEntryFromTextTable ; de <- address of the string to copy
-   
-    ld hl, GameState.speedAsText
-    ld c, 4
-    call StrCpyWithCleanup ; hl: Target, de: Source, c: Lengthexpected
+    
+    
+    
+    
+    
+    
 
 .after4Frames
 .always
@@ -165,10 +164,6 @@ MutateVisualGameState:
     ;; things that happen every second
     ;ld de, TILES_LOCATION
     ;call BlankTile
-    ld a, [GameState.angle]
-    ld b, a
-    ld a, [GameState.velocity]
-    ld d, 0
     ;call MergeTilesByID
 
     ldh a, [wFrameCounter60]
@@ -185,7 +180,6 @@ MutateVisualGameState:
     and a, %11111
     cp %11111
     jr z, .f16
-    call _HandleSpeedAndMovement
 .f16
     ; some state is refreshed every 16 frames
     ld a, b
@@ -205,7 +199,7 @@ MutateVisualGameState:
     and a, %11 ; %11
     xor %11
     jr nz, .after4Frames
-    call _WriteSpeedOnScreen
+    call __WriteTextOnWindow
 
 .after4Frames
     
@@ -214,85 +208,24 @@ MutateVisualGameState:
     pop af
 ret
 
-; Mutate game state for speed and movement
-_HandleSpeedAndMovement:
-
+; Mutate state 
+_HandleTrackerInput:
+    ret ; for now, useless dead code
     ;; accelerate
     bit PADB_UP, c
-    jr z, .decelerate
-DEF ACCELERATOR_FACTOR = 1
-DEF MAX_SPEED = 120
-DEF MIN_SPEED = 0
-DEF ROTATION_FACTOR = 1
-.accelerate
-    ld a, [GameState.velocity]
-    add a, ACCELERATOR_FACTOR
-    cp a, MAX_SPEED
-    jr c, .endSpeed ; if speed <= MAX_SPEED, bye
-    ld a, MAX_SPEED ; cap speed to MAX_SPEED
-    jr .endSpeed
-.decelerate
-    ld a, [GameState.velocity]
+    jr z, .postMoveUp
+.moveUp
+.postMoveUp
     bit PADB_DOWN, c
-    jr z, .decelerateLess
-.decelerateStrong
-    ; divide speed by 2 if braking
-    srl a ; will eventually become 0
-    jr .endSpeed
-.decelerateLess
-    cp a, 0
-    jp z, .endSpeed
-    dec a
-.endSpeed 
-    ; at this stage, a contains the desired velocity
-    ld [GameState.velocity], a
+    jr z, .postMoveDown
 
-.rotation
-    ld a, [GameState.angle]
-    bit PADB_LEFT, c
-    jr nz, .rotateLeft
-    bit PADB_RIGHT, c
-    jr nz, .rotateRight
-    jr .endRotate
-.rotateLeft
-    add a, ROTATION_FACTOR
-    jr .endRotate
-.rotateRight
-    sub a, ROTATION_FACTOR
-
-.endRotate
-    ld [GameState.angle], a
+.moveDown
+.postMoveDown
 ret
 
-; mutates a, b, c, d, hl
+; could be used as a state machine that moves based on wCurKeys and wPrevKeys 
 LastInputsHandle:
-    xor a  
-    ld c, a
-    ld b, a ; BC <- 00
-    ld a, [wNewlyPressed] ; load newly pressed buttons in A
-    ld d, a ; D <- wNewlyPressed
-    ld a, [wLastInputSPointer]
-    and a, 0x0f ; range: 0-15
-    ld c, a ; BC <- relative pointer with B always 0
-    ld hl, wLastInputStrings
-    add hl, bc ; now hl has the address to the most recent input string
-    ld a, [hl] ; a <- wLastInputStrings[ptr]
-    cp a, d ; compare to wNewlyPressed
-    ; jp z, .err ; if there's no change, just do nothing
-    ld [wLastInputSPointer + 1], a
-    ld a, c
-    inc a
-    and a, 0x0f ; rollover to 0
-    ld c, a ; BC <- A with B always = 0
-    ld [wLastInputSPointer], a
-    ld hl, wLastInputSPointer
-    add hl, bc
-    ld [hl], d 
-    jp .out
-.err
-    ld a, 0x13
-    ld [wLastInputSPointer + 1], a
-.out:
+
 ret
 
 ; importantly this doesn't mutate a
@@ -395,52 +328,168 @@ DEF SelectInactiveChar = GFX_TILES_OFFSET + 22
 .out:
 ret 
 
-DEF BaseTileAddrForText = 17 * 32 + 4
-DEF GameTileMapOffset = TitleScreenTM + BaseTileAddrForText
-DEF GameTileLastOffset = GameTileMapOffset + 10
+DEF BaseTileAddrForText = 0 ; 16th line, 4th col
+DEF GameTileMapOffset = TrackerUITM + BaseTileAddrForText
+DEF GameTileLastOffset = GameTileMapOffset + TRACKTITLES_MAX_LENGTH
 
 ; uses no input parameters, purely based on game state
-_WriteSpeedOnScreen:
+; write the text and then write the original blocks
+__WriteTextOnBG:
     push hl
     push de
     push bc
-    ld bc, GameTileMapOffset
-    ld hl, GameState.speedAsText
-    ld de, $9800 + BaseTileAddrForText
-FOR N, GameTileLastOffset - GameTileMapOffset, 0, -1
-    ld a, [hl]
-    cp 0
-    jr z, .reconf{N}
-    ld [de], a
-    inc de
-    inc hl
-    inc bc
-    jr .noReconf{N}
-.reconf{N}
-    ld h, N
-    jp _redrawScreen
-.noReconf{N}
-ENDR
-_endWsOS:
+    ; ld bc, GameTileMapOffset
+    ld hl, GameState.trackAsText
+    ld de, TILEMAP_LOCATION + BaseTileAddrForText
+    ld b, GameTileLastOffset - GameTileMapOffset
+    
+    .loopWTOS
+        ld a, [hl]
+        cp a, 0
+        ; do we have a text terminator?
+        ; if we do, get to redraw the tiles
+        jr z, .redrawTiles
+        ; if we're here, we should draw text
+        ld [de], a ; write tile ID to tilemap at right loc
+        inc de ; prepare for next tile
+        inc hl ; prepare to read next char
+        dec b ; one less tile to go
+        jr nz, .loopWTOS ; if we're not done yet, loop
+    .redrawTiles
+        ; ensure b is not 0 (i.e. we have no tile to redraw)
+        ld a, b
+        cp a, 0
+        jr z, .afterRedraw
+        ; setup for reloading tile
+        ld a, [wCurrentTilemap]
+        ld h, a
+        ld a, [wCurrentTilemap +1]
+        ld l, a
+        ; now hl is set to tilemap
+        ; get to right offset
+        ld a, b ; save current offset to a temporarily
+        ld b, 0 ;
+        ld c, a ; 
+        add hl, bc ; now hl is set to just the right position in the tilemap
+        ld b, a    ; restore redraw counter to b
+        ; load offset to apply (in offset-127) and store to c
+        ld a, [wCurrentTilemapOffset]
+        ;; two options: it's >127, and the offset is positive, or <= 127, and it's negative
+        cp 127
+        jr c, .loopNeg ; if <127, we handle the negative loop
+        sub a, 127 ; remove 127 to get the real offset we want
+        ld c, a
+        .loopPos
+            ld a, [hl]
+            add a, c
+            ld [de], a
+            inc de
+            inc hl
+            dec b
+            jr nz, .loopPos
+            jr .afterRedraw
+        .loopNeg
+            ld a, [hl]
+            sub a, c
+            ld [de], a
+            inc de
+            inc hl
+            dec b
+            jr nz, .loopNeg
+            ; jr .afterRedraw
+    .afterRedraw
+    pop bc
+    pop de
+    pop hl
+ret
+
+__WriteTextOnWindow:
+    push hl
+    push de
+    push bc
+    ; ld bc, GameTileMapOffset
+    ld hl, GameState.trackAsText
+    ld de, _SCRN1 + BaseTileAddrForText
+    ld b, GameTileLastOffset - GameTileMapOffset
+    
+    .loopWTOS
+        ld a, [hl]
+        cp a, STRING_TERMINATOR
+        ; do we have a text terminator?
+        ; if we do, get to redraw the tiles
+        jr z, .redrawTiles
+        ; if we're here, we should draw text
+        ld [de], a ; write tile ID to tilemap at right loc
+        inc de ; prepare for next tile
+        inc hl ; prepare to read next char
+        dec b ; one less tile to go
+        jr nz, .loopWTOS ; if we're not done yet, loop
+    .redrawTiles
+        ; ensure b is not 0 (i.e. we have no tile to redraw)
+        ld a, b
+        cp a, 0
+        jr z, .afterRedraw
+        ld a, [wCurrentWindowTilemapOffset]
+        cp a, 0
+        jr nz, .withTilemapSetup
+        ld a, [wCurrentWindowTilemapOffset+1]
+        cp a, 0
+        jr nz, .withTilemapSetup
+        jr .noTilemap
+    .withTilemapSetup
+        ; setup for reloading tile
+        ld a, [wCurrentTilemap]
+        ld h, a
+        ld a, [wCurrentTilemap +1]
+        ld l, a
+        ; now hl is set to tilemap
+        ; get to right offset
+        ld a, b ; save current offset to a temporarily
+        ld b, 0 ;
+        ld c, a ; 
+        add hl, bc ; now hl is set to just the right position in the tilemap
+        ld b, a    ; restore redraw counter to b
+        jr .withTilemap
+        ; load offset to apply (in offset-127) and store to c
+    .noTilemap
+    xor a
+    .loopNT
+        ld [de], a
+        inc de
+        dec b
+        jr nz, .loopNT
+    jr .afterRedraw
+    ;; untested below
+    .withTilemap
+        ;; two options: it's >127, and the offset is positive, or <= 127, and it's negative
+        ld a, [wCurrentTilemapOffset]
+        cp 127
+        jr c, .loopNeg ; if <127, we handle the negative loop
+        sub a, 127 ; remove 127 to get the real offset we want
+        ld c, a
+        .loopPos
+            ld a, [hl]
+            add a, c
+            ld [de], a
+            inc de
+            inc hl
+            dec b
+            jr nz, .loopPos
+            jr .afterRedraw
+        .loopNeg
+            ld a, [hl]
+            sub a, c
+            ld [de], a
+            inc de
+            inc hl
+            dec b
+            jr nz, .loopNeg
+            ; jr .afterRedraw
+    .afterRedraw
     pop bc
     pop de
     pop hl
 ret
 
 ; auxiliary to WriteSpeedOnScreen
-_redrawScreen:
-.loopRS
-    ld a, [bc]
-    cp 0
-    jr z, .noadd
-    add GFX_TILES_OFFSET
-.noadd:
-    ld [de], a
-    inc de
-    inc bc
-    dec h
-    ld a, h
-    cp 0
-    jr nz, .loopRS
-    jr _endWsOS
 ENDC

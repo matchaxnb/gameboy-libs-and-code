@@ -1,11 +1,11 @@
 INCLUDE "defines/hardware.inc"
 INCLUDE "defines/palettes.inc"
 INCLUDE "src/assets.asm"
-INCLUDE "src/charmap.asm"
-INCLUDE "macros/macros.asm"
 
-INCLUDE "src/memory_map.asm"
+INCLUDE "macros/macros.asm"
 INCLUDE "src/constants.asm" ; must come after assets
+INCLUDE "src/memory_map.asm"
+INCLUDE "src/charmap.asm"   ; 
 INCLUDE "macros/audiomacros.asm"
 INCLUDE "src/tables_audio.asm"
 INCLUDE "macros/compact_audio.asm"

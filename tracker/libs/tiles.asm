@@ -121,3 +121,8 @@ MergeTilesByID:
   WaitForVBlank
   jp MergeTiles ;; 
 ret
+
+LoadTileset:
+  
+  call Memcopy
+ret

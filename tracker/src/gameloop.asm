@@ -10,6 +10,9 @@ ld [wAudioMasterClock], a
 ld a, 0
 call Change_AudioTrack
 
+
+
+
 MainLoop:
   ; these can run outside of VBlank
 .nonVbl:

@@ -4,8 +4,8 @@ SECTION FRAGMENT "PROGRAM", ROM0
 
 
 
-DEF DUR_DIATONIC_C_BASS = (DiatonicC_BassEnd - DiatonicC_Bass) / AUDIO_PKTSIZE
-DEF DUR_DIATONIC_C_TREBLE = (DiatonicC_TrebleEnd - DiatonicC_Treble) / AUDIO_PKTSIZE
+;DEF DUR_DIATONIC_C_BASS = (DiatonicC_BassEnd - DiatonicC_Bass) / AUDIO_PKTSIZE
+;DEF DUR_DIATONIC_C_TREBLE = (DiatonicC_TrebleEnd - DiatonicC_Treble) / AUDIO_PKTSIZE
 
 DEF DUR_PRELUDE_C_BASS = (BWV846_BassEnd - BWV846_Bass) / AUDIO_PKTSIZE
 DEF DUR_PRELUDE_C_TREBLE = (BWV846_TrebleEnd - BWV846_Treble) / AUDIO_PKTSIZE
@@ -19,26 +19,25 @@ DEF DUR_CPTPRELUDE_TREB = (BWV846Compact_TrebleEnd - BWV846Compact_Treble) / COM
 DEF DUR_MYMOTIF_BASS = (MyMotif_BassEnd - MyMotif_Bass) / COMPACT_AUDIO_PKTSIZE
 DEF DUR_MYMOTIF_TREB = (MyMotif_TrebleEnd - MyMotif_Treble) / COMPACT_AUDIO_PKTSIZE
 
-PRINTLN "My motif duration (bass/treble): {DUR_MYMOTIF_BASS} / {DUR_MYMOTIF_TREB}"
+CompactAudioTrackSize DiatonicC_Bass, DUR_DIATONIC_C_BASS
+CompactAudioTrackSize DiatonicC_Treble, DUR_DIATONIC_C_TREBLE
 
+PRINTLN "My motif duration (bass/treble): {DUR_MYMOTIF_BASS} / {DUR_MYMOTIF_TREB}"
+PRINTLN "Diatonic C bass length: {DUR_DIATONIC_C_BASS}, treble: {DUR_DIATONIC_C_TREBLE}"
 AU_DefCompactMusicIntoCH1orCH2 CH1
 AU_DefCompactMusicIntoCH1orCH2 CH2
 
-AudioC1C2PlayTrack CH2, DiatonicC_Treble, DUR_DIATONIC_C_TREBLE, LP_DIATONIC_C_TREBLE
-AudioC1C2PlayTrack CH1, DiatonicC_Bass, DUR_DIATONIC_C_BASS, LP_DIATONIC_C_BASS
-
 ; AudioC1C2PlayTrack CH2, BWV846_Treble, DUR_PRELUDE_C_TREBLE, 0
 ; AudioC1C2PlayTrack CH1, BWV846_Bass, DUR_PRELUDE_C_BASS, 0
-
-
-AudioC1C2PlayTrack CH2, BWV846Full_Treble, DUR_FULLPRELUDE_C_TREBLE, 0
-AudioC1C2PlayTrack CH1, BWV846Full_Bass, DUR_FULLPRELUDE_C_BASS, 0
 
 CompactPlayAudio_CH1orCH2 CH1, MyMotif_Bass, DUR_MYMOTIF_BASS, 0
 CompactPlayAudio_CH1orCH2 CH2, MyMotif_Treble, DUR_MYMOTIF_TREB, 0
 
 CompactPlayAudio_CH1orCH2 CH1, BWV846Compact_Bass, DUR_CPTPRELUDE_BASS, 0
 CompactPlayAudio_CH1orCH2 CH2, BWV846Compact_Treble, DUR_CPTPRELUDE_TREB, 0
+
+CompactPlayAudio_CH1orCH2 CH1, DiatonicC_Bass, DUR_DIATONIC_C_BASS, 0
+CompactPlayAudio_CH1orCH2 CH2, DiatonicC_Treble, DUR_DIATONIC_C_TREBLE, 0
 
 PRINTLN "Duration in packets Prelude in C (treble/bass): {DUR_PRELUDE_C_TREBLE} / {DUR_PRELUDE_C_BASS}"
 
@@ -59,6 +58,14 @@ Change_AudioTrack:
     ldh a, [wAudioMasterClock]
     and a, $7f
     ldh [wAudioMasterClock], a
+    ; set the track title from memory
+    ldh a, [wMusicTrack]
+    and $7f
+    ld hl, TrackNamesTable
+    call GetNthEntryFromTextTable ; de <- address of the string to copy
+    ld hl, GameState.trackAsText
+    ld c, TRACKTITLES_MAX_LENGTH
+    call StrCpyWithCleanup ; hl: Target, de: Source, c: Lengthexpected
     pop af
     pop de
     pop bc

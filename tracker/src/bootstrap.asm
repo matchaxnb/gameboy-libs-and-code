@@ -24,78 +24,123 @@ EntryPoint:
 ; Shut down audio circuitry
 ld a, AUDENA_ON
 ld [rAUDENA], a
-
-
-;; reset RAM to 0
- ld hl, _RAM
- ld bc, GameStateEnd - GlobalVariables
- ld d, 0
- call InitMemChunk
-;
- ld hl, _HRAM
- ld bc, lastEntry - FirstHRAMEntry
- ld d, 0
- call InitMemChunk
-
 ; enable interrupts
 IF (DEF(ENABLE_VBLANKINT) && ENABLE_VBLANKINT == 1)
 ; setup the timer
-ld a, IEF_VBLANK
+ld a, IEF_VBLANK | IEF_STAT
 ldh [rIE], a
 xor a
 ldh [rIF], a
+ld a, STATF_MODE00
+ldh [rSTAT], a
+
 ei ;; enable the interrupts, because we have defined a non-nop vector there
 nop ;; in case
 ELSE
-
+  FAIL "We require VBLANKINT"
 ENDC
 
-
-; can't touch VRAM anything until we're in VBlank, so...
-PrepareForVRAMWrite
-
-;.vbl: ld a, [rLY]
-;cp SCRN_Y - 10
-;jr c, .vbl
 ; load a palette
 ld a, DEFAULT_PALETTE
 ld [rBGP], a
 
 
+
+PrepareForVRAMWrite
+
+;; reset RAM to 0
+ ld hl, _RAM
+ ld bc, GlobalVariablesEnd - GlobalVariables
+ ld d, 0
+ call InitMemChunkVBlankSafe
+;
+ ld hl, GameState
+ ld bc, GameStateEnd - GameState
+ ld d, 0
+ call InitMemChunkVBlankSafe
+ 
+ ; can't touch VRAM anything until we're in VBlank, so...
+
+
+
+; start by clearing VRAM
+ ld hl, _HRAM
+ ld bc, lastEntry - FirstHRAMEntry
+ ld d, 0
+ call InitMemChunkVBlankSafe
+
+
+ld hl, _OAMRAM
+ld bc, OAM_COUNT * 4
+call InitMemChunkVBlankSafe
+; we may still have to wait
+
+
+
+
+
 ; copy tiles
-; first, fonts as we're writing text a lot
-; then, the rest of the tiles
+; first, UI items
+
 
 ld hl, TILES_LOCATION
-ld de, FontData
-ld bc, FontDataEnd - FontData
+ld de, UITiles
+ld bc, UI_TILES_SIZE
 call Memcopy
 
-ld hl, GFX_TILES_LOCATION
-ld bc, TileDataEnd - TileData
-ld de, TileData
+;; hl is auto-advanced by Memcopy
+; then, musical elements
+;
+ld bc, MUSICAL_TILES_SIZE
+ld de, MusicalTiles
+call Memcopy
+
+; then, sprites
+ld bc, SPRITE_TILES_SIZE
+ld de, SpritesROM
 call Memcopy
 
 
-; remember: two adjacent tilemaps exist
-; https://gbdev.io/pandocs/Tile_Maps.html#vram-tile-maps
-; $9800 -> $9BFF
-; $9C00 -> $9FFF
-;; this draws the tilemap to VRAM
-; copy the base screen
-ld hl, $9800
-ld de, TitleScreenTM
-ld c, (EndTitleScreenTM - TitleScreenTM) / 4
+
+ld hl, _SCRN1
+ld d, 0
+ld bc, 32*32
+call InitMemChunkVBlankSafe
+
+; ld c, (TrackerUIEnd - TrackerUI) / 4
 ld b, GFX_TILES_OFFSET ; some tilemaps are built with an offset
-call LoadTilemapWithPositiveOffset
+;; importantly, use LoadTilemapWithOffset to ensure the current offset is stored
+;; and can be
+call LoadWindowTilemap
 
+ld hl, _SCRN0
+ld de, TrackerUI
+ld c, (TrackerUIEnd - TrackerUI) / 4
+ld b, GFX_TILES_OFFSET ; some tilemaps are built with an offset
+;; importantly, use LoadTilemapWithOffset to ensure the current offset is stored
+;; and can be
+call LoadScreenTilemap
 
-; turn on the LCD
-ld a, LCDCF_ON | LCDCF_BGON
-ld [rLCDC], a
-
+DEF DISPLAY_FLAGS = LCDCF_ON | LCDCF_BGON | LCDCF_WINON | LCDCF_BG8000 | LCDCF_WIN9C00
+ld a, 7
+ld [rWX], a
+ld a, 144 - 8
+ld [rWY], a
+ld a, DISPLAY_FLAGS
+ldh [rLCDC], a
 ; the gameloop will takeover from there
+
+call LoadRemainingTilemaps
 
 jp StartGame
 
+LoadRemainingTilemaps:
+  PrepareForVRAMWrite
+  ld hl, CHARS_LOCATION
+  ld bc, ASCII_TILES_SIZE
+  ld de, AsciiTiles + ASCII_TILES_SKIPLOAD ; skip the first tile, which is blank
+  call MemcopyVBlankSafe
+  ld a, DISPLAY_FLAGS
+  ldh [rLCDC], a
+ret
 ENDC

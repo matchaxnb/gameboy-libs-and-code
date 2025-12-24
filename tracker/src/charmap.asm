@@ -1,10 +1,10 @@
 IF !DEF(CHARMAP_GBASM)
 DEF CHARMAP_GBASM EQU 0
 NEWCHARMAP ascii
-DEF offset_to_ascii = -$20
+DEF offset_to_ascii = ASCII_TILES_OFFSET - $21
 ; Space
 ; CHARMAP " ", $20 + offset_to_ascii
-CHARMAP " ", $20 + offset_to_ascii
+CHARMAP " ", 0 ; $20 + offset_to_ascii
 ; Punctuation (0x21–0x2F)
 CHARMAP "!", $21 + offset_to_ascii
 CHARMAP "\"", $22 + offset_to_ascii ; double quote 
@@ -112,6 +112,6 @@ CHARMAP "\{", $7B + offset_to_ascii
 CHARMAP "|", $7C + offset_to_ascii
 CHARMAP "\}", $7D + offset_to_ascii
 CHARMAP "~", $7E + offset_to_ascii
- 
+
 SETCHARMAP ascii
 ENDC

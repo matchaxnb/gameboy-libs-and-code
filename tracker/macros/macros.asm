@@ -374,22 +374,28 @@ ENDM
 IF (DEF(ENABLE_VBLANKINT) && ENABLE_VBLANKINT == 1)
 ; mutates VBlank
 MACRO WaitForVBlank
+push hl
 ld hl, inVBlank
 xor a
 .waitVbl\@
   halt
+  nop
   cp a, [hl]
   jr z, .waitVbl\@
   ld [hl], a
+pop hl
 ENDM
 
 MACRO WaitForNonVBlank
+push hl
 ld hl, inVBlank
 xor a
 .waitNVbl\@
-  halt
+  ;halt
+  nop
   cp a, [hl]
-  jr c, .waitNVbl\@
+  jr nz, .waitNVbl\@
+pop hl
 ENDM
 
 
@@ -465,11 +471,55 @@ jp hl
 .postFP\@
 ENDM
 
-DEF MASK_INPUT_D = %10000000
-DEF MASK_INPUT_U = %01000000
-DEF MASK_INPUT_L = %00100000
-DEF MASK_INPUT_R = %00010000
-DEF MASK_INPUT_S = %00001000
-DEF MASK_INPUT_T = %00000100 ; select
-DEF MASK_INPUT_B = %00000010
-DEF MASK_INPUT_A = %00000001
+; @param \1 a label
+; @param \2 a def name
+; @param \3 a value to remove, useful when you want to ignore part of a file
+; if there's a label \1End, then DEF \2 = \1End - \1
+MACRO ZoneLength
+  ASSERT \1
+  ASSERT \1End
+  ASSERT STRLEN("\2") > 0
+  DEF \2 = (\1End - \1)
+ENDM
+
+/**
+We encode our text tables as follows:
+
+<N> [<C>...] [<N> [<C>...]]... <0>
+
+N is the offset to the Next element in the table
+C is the characters in the string in whatever
+charmap we are using
+
+<N> stores the offset to the next <N>
+
+If <N> is 0, then the table is at its end.
+
+Hints:
+    - You can set various labels at some points to mark subsections
+
+  
+If you call this macro before setting a CHARMAP, unexpected results.
+*/
+; @param \1 a text to encode
+; @param \2 maximum acceptable length (max 254)
+; encodes text in the format described in the comment above
+MACRO EncodeText
+  ASSERT \2 < $ff
+  ASSERT STRLEN(\1) <= \2
+.textEntry\@:
+  db STRLEN(\1) + 1, \1
+ENDM
+
+; a naive WaitForVBlank for startup situations
+MACRO DumbWaitForVBlank
+.vbl\@: ld a, [rLY]
+        cp SCRN_Y
+        jr c, .vbl\@
+ENDM
+
+MACRO DumbWaitForNonVBlank
+.vbl\@: ld a, [rLY]
+        cp SCRN_Y
+        jr nc, .vbl\@
+ENDM

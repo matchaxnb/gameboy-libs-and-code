@@ -59,8 +59,8 @@ StrCpy:
     dec b      ; one char less to go
     jr .strcpyLoop ; go over loop
 .endStrcpy
-    ; ensure there's a \0 at [hl]
-    xor a, a
+    ; ensure there's a string terminator at [hl]
+    ld a, STRING_TERMINATOR
     ld [hl], a
     pop bc
     pop hl
@@ -93,14 +93,14 @@ StrCpyWithCleanup:
     inc de     ; dest ++
     dec b      ; one char less to go
     dec c      ;  also one less to cleanup
-
     jr .strcpyLoop ; go over loop
 .endStrcpy
-    ; ensure there's a \0 at [hl]
+    ; ensure there's a string terminator at [hl]
     xor a
     cp c
     jr z, .exit
 .cleanup
+    ld a, STRING_TERMINATOR
     ld [hli], a
     dec c
     xor a

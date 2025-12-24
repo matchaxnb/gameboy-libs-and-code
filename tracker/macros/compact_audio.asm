@@ -338,3 +338,11 @@ ASSERT \1 < 64
 DEBUGPLN STRFMT("PianoRest \1 cr: %d", CONVERSION_RATIO)
 AU_CompactMusic 0, \1 * CONVERSION_RATIO, 1
 ENDM
+
+; @param \1 A label. There should be a corresponding terminator label ending with End
+; @param \2 a def name
+
+MACRO CompactAudioTrackSize
+    ZoneLength \1, \2, 0
+    DEF \2 = \2 / COMPACT_AUDIO_PKTSIZE
+ENDM

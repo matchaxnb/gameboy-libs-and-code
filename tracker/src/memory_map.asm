@@ -1,6 +1,6 @@
 IF !DEF(MEMORY_MAP_GBASM)
 DEF MEMORY_MAP_GBASM EQU 0
-SECTION "VARIABLES", WRAM0[$c000]
+SECTION "VARIABLES", WRAM0[_RAM]
 ;; MSB[DOWN UP LEFT RIGHT START SELECT B A]LSB
 GlobalVariables:
 wLastUpdatedInput: db
@@ -8,20 +8,18 @@ wLastInputStrings: ds 16
 wLastInputSPointer: db
 
 wFunPointer: dw
+wCurrentTilemap: dw
+wCurrentTilemapOffset: db ; offset-127 value
+wCurrentWindowTilemap: dw
+wCurrentWindowTilemapOffset: db ; offset-127 value
 GlobalVariablesEnd:
 
 ;; this defines the GameState structure
 SECTION "GameState", WRAM0[GlobalVariablesEnd]
 
 GameState:
-    GameState.room:: db ; room ID 1 byte
-UNION  ; 2 bytes
-    GameState.velocity:: ds 1 ; 
-    GameState.angle:: ds 1 ;
-NEXTU
-    GameState.movement:: ds 2 ; vector<H,V>
-ENDU
-    GameState.speedAsText:: ds 8 ; string for speed
+    GameState.mode:: db ; room ID 1 byte
+    GameState.trackAsText:: ds TRACKTITLES_MAX_LENGTH + 1; string for speed
     GameState.stateMachineState: db ; just an ID
 GameStateEnd:
 

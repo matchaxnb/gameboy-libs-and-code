@@ -1,6 +1,6 @@
 IF !DEF(TABLES_AUDIO_GBASM)
 DEF TABLES_AUDIO_GBASM = 0
-SECTION "MIDI_TABLES", ROM0[$200]
+SECTION "MIDI_TABLES", ROM0[$250]
 ;; REMEMBER dw are stored in little-endian. the MS byte is lower in address space
 PitchesTable:
 Pitches.C2:	    dw  PERIOD_C2
