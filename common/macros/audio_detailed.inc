@@ -88,7 +88,7 @@ ENDM
 ; @param \2 track name (should resolve to an existing label that points to the first audio packet in track
 ; @param \3 duration (number of audio blocks for that song)
 ; @param \4 looping point (0-based index to loop from when at song end)
-; @output a function called AudioPlay_\2 
+; @output a function called PlayChannel_\2 
 MACRO AudioC1C2PlayTrack
 if (\3 < 255)
 PRINTLN "Using DetailedAudioC1C2PlayTrack_SmallOffset \1 \2 \3 \4"
@@ -105,7 +105,7 @@ ENDM
 ; @param \2 track name (should resolve to an existing label that points to the first audio packet in track
 ; @param \3 duration (number of audio blocks for that song)
 ; @param \4 looping point (0-based index to loop from when at song end)
-; @output a function called AudioPlay_\2 
+; @output a function called PlayChannel_\2 
 MACRO DetailedAudioC1C2PlayTrack_SmallOffset
     ASSERT (STRCMP("\1", "CH1") * STRCMP("\1", "CH2") == 0)
     ASSERT \3 < 255
@@ -114,7 +114,7 @@ MACRO DetailedAudioC1C2PlayTrack_SmallOffset
     else
     DEF _REGISTER_TO_WRITE = rNR21
     endc
-    AudioPlay_\2:
+    PlayChannel_\2:
         ld d, 0
         ldh a, [wMusicFlags\1]
         ld h, a
@@ -166,7 +166,7 @@ ENDM
 ; @param \2 track name (should resolve to an existing label that points to the first audio packet in track
 ; @param \3 duration (number of audio blocks for that song)
 ; @param \4 looping point (0-based index to loop from when at song end)
-; @output a function called AudioPlay_\2 
+; @output a function called PlayChannel_\2 
 MACRO DetailedAudioC1C2PlayTrack_BigOffset
     ASSERT (STRCMP("\1", "CH1") * STRCMP("\1", "CH2") == 0)
     ASSERT \3 >= 255
@@ -175,7 +175,7 @@ MACRO DetailedAudioC1C2PlayTrack_BigOffset
     else
     DEF _REGISTER_TO_WRITE = rNR21
     endc
-    AudioPlay_\2:
+    PlayChannel_\2:
         push de
         push hl
         ld d, 0

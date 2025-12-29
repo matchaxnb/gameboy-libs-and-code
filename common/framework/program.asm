@@ -22,7 +22,6 @@ ENDC
 
 IF (USE_BOOTSTRAP)
     INCLUDE "baseblocks/bootstrap.asm"
-    
 ENDC
 
 SECTION FRAGMENT "PROGRAM", ROM0
@@ -30,8 +29,10 @@ Libraries::
 INCLUDE "libs/all_libs.asm"
 EndLibraries::
 
-PUSHS FRAGMENT "HighVars", HRAM
+SECTION FRAGMENT "VARIABLES", WRAM0
+lastVariableEntry::
+ENDSECTION
 
-lastEntry::
-
-POPS
+SECTION FRAGMENT "HighVars", HRAM
+lastHighVariableEntry::
+ENDSECTION

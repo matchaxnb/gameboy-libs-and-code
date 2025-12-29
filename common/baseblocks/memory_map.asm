@@ -1,6 +1,7 @@
 IF !DEF(MEMORY_MAP_GBASM)
 DEF MEMORY_MAP_GBASM = 0
-PUSHS FRAGMENT "VARIABLES", WRAM0
+SECTION FRAGMENT "VARIABLES", WRAM0
+firstVariableEntry::
 GlobalVariables::
     wCurrentTilemap:: dw
     wCurrentTilemapOffset:: db ; offset-127 value
@@ -20,15 +21,16 @@ GlobalVariablesEnd::
 ;; REPT 32
 ;;     TileLoadEntry
 ;; ENDR
-
-VariablesEnd:
 ;; this defines the GameState structure
-POPS
-SECTION "TileSets", VRAM
+ENDSECTION
 
+SECTION FRAGMENT "HighVars", HRAM
+firstHRAMEntry::
+ENDSECTION
 
-PUSHS FRAGMENT "HighVars", HRAM
-FirstHRAMEntry::
-POPS
+SECTION "TileSets", VRAM[_VRAM]
+firstTilesetEntry::
+ENDSECTION
+
 
 ENDC

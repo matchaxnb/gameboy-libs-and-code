@@ -2,9 +2,9 @@ INCLUDE "macros/macros.inc"
 DEF CONVERSION_RATIO = 1
 MyMotif:
 MyMotif_Bass:
-    AU_CompactAdjustment %10, 13, 0, 4
-    PianoRestShort 2
+    
     REPT 4
+        AU_CompactAdjustment %10, 13, 0, 4
         PianoNoteShort D3, 4
         PianoNoteShort F3, 4
         PianoNoteShort A3, 4
@@ -12,15 +12,16 @@ MyMotif_Bass:
         PianoNoteShort G3, 4
         PianoNoteShort E3, 4
     ENDR
+    PianoRestShort 2
     AU_CompactAdjustment %10, 13, 0, 3
 
 
 MyMotif_BassEnd:
 
 MyMotif_Treble:
-    AU_CompactAdjustment %00, 8, 0, 2
-    PianoRestShort 2
+    
     REPT 4
+        AU_CompactAdjustment %00, 8, 0, 2
         PianoNoteShort D4, 4
         PianoNoteShort F4, 4
         PianoNoteShort A4, 4
@@ -28,6 +29,7 @@ MyMotif_Treble:
         PianoNoteShort E4, 4
         PianoNoteShort G4, 4
     ENDR
+    PianoRestShort 1
 
 MyMotif_TrebleEnd:
 

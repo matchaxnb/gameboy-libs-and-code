@@ -5,42 +5,18 @@ INCLUDE "macros/macros.inc"
 SECTION "BOOTSTRAPCODE", ROM0[_last_section_stop]
 EntryPoint::
 ; turn off the screen
+TurnOffInterrupts
 DisableLCD
-; Shut down audio circuitry
-ld a, AUDENA_OFF
-ld [rAUDENA], a
-
-DEF _interrupt_mask = 0
-DEF _stat_mode = 0
-IF (USE_VBLANK_INTERRUPT) 
-  DEF _interrupt_mask = _interrupt_mask | IEF_VBLANK
-ENDC
-IF (USE_STAT_INTERRUPT) 
-  DEF _interrupt_mask = _interrupt_mask | IEF_STAT
-  DEF _stat_mode = STATF_MODE00
-ENDC
-
-; setup registers for VBlank and STAT-MODE00 interrupts
-ld a, _interrupt_mask
-ldh [rIE], a
-xor a
-ldh [rIF], a
-ld a, _stat_mode
-ldh [rSTAT], a
-
-;; enable interrupts
-ei
-nop 
 
 
 ; clear HRAM (setting 0 everywhere)
 ld d, 0
-ld hl, _HRAM
-ld bc, lastEntry - _HRAM
+ld hl, firstHRAMEntry
+ld bc, lastHighVariableEntry - firstHRAMEntry
 call InitMemChunk
 ;; reset conventional RAM to 0
- ld hl, GlobalVariables
- ld bc, GlobalVariablesEnd - GlobalVariables
+ ld hl, firstVariableEntry
+ ld bc, lastVariableEntry - firstVariableEntry
  ld d, 0
  call InitMemChunk
 ;
@@ -64,6 +40,7 @@ ld d, 0
 call InitMemChunk
 ENDC
 
+SetupInterrupts
 
 PrepareForVRAMWrite
 ; now clean OAM RAM
@@ -84,7 +61,7 @@ PostSetupTilemaps::
 EnableLCD
 
 
-; the gameloop will takeover from there
+; the gameloop will takeover from there, but first StartGame lets us perform final adjustments
 
 jp StartGame
 

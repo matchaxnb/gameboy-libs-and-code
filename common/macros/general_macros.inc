@@ -487,23 +487,25 @@ ENDM
 ; @param \2 Memory location
 ; mutates a
 MACRO StoreFunctionPointer 
-  ld a, HIGH(\1)
-  ld [\2], a
-  ld a, LOW(\1)
-  ld [\2 + 1], a
+  .storeFunctionPointer_\@_\1:
+    ld a, HIGH(\1)
+    ld [\2], a
+    ld a, LOW(\1)
+    ld [\2 + 1], a
 ENDM
 
 ; @param \1 Memory location
 ; call the function pointer
 MACRO CallFunctionPointer
-ld bc, .postFP\@
-push bc
-ld a, [\1]
-ld h, a
-ld a, [\1 +1]
-ld l, a
-jp hl
-.postFP\@
+  .callFunctionPointer_\@_\1:
+    ld bc, .postFP\@
+    push bc
+    ld a, [\1]
+    ld h, a
+    ld a, [\1 +1]
+    ld l, a
+    jp hl
+    .postFP\@:
 ENDM
 
 ; @param \1 a label
@@ -575,6 +577,37 @@ MACRO TileLoadEntry
   vramAddress{_TLECalls}: dw
   tileID{_TLECalls}: db
   tileFlags{_TLECalls}: db
+ENDM
+
+MACRO TurnOffInterrupts
+xor a
+ldh [rIE], a
+ldh [rIF], a
+ldh [rSTAT], a
+ENDM
+MACRO SetupInterrupts
+DEF _interrupt_mask = 0
+DEF _stat_mode = 0
+IF (USE_VBLANK_INTERRUPT) 
+  DEF _interrupt_mask = _interrupt_mask | IEF_VBLANK
+ENDC
+IF (USE_STAT_INTERRUPT) 
+  DEF _interrupt_mask = _interrupt_mask | IEF_STAT
+  DEF _stat_mode = STATF_MODE00
+ENDC
+
+; setup registers for VBlank and STAT-MODE00 interrupts
+ld a, _interrupt_mask
+ldh [rIE], a
+xor a
+ldh [rIF], a
+ld a, _stat_mode
+ldh [rSTAT], a
+
+;; enable interrupts
+ei
+nop 
+
 ENDM
 
 ENDC

@@ -17,6 +17,8 @@ MACRO AU_DEFAdjustParametersCH1orCH2
 
     ret
 ENDM
+
+
 ; define fun to load music chunk into CH1 or CH2
 ; read from register hl
 ; @param \1: CH1 or CH2
@@ -27,6 +29,7 @@ DEF _BASE_REG = rNR11
 else
 DEF _BASE_REG = rNR21
 ENDC
+    PRINTLN "Defining function LoadCompactMusic\1"
     LoadCompactMusic\1:
         push de
         push bc
@@ -106,7 +109,10 @@ ENDC
     ret
 ENDM
 
-
+MACRO AU_DefLoadCompactMusic
+    AU_DefCompactMusicIntoCH1orCH2 CH1
+    AU_DefCompactMusicIntoCH1orCH2 CH2
+ENDM
 ;  macro to declare a function PlayChannel_\2 that will play a compact track on a channel when called
 ; @param \1 CH1 or CH2
 ; @param \2 starting location (resolve to a label)
@@ -134,9 +140,8 @@ DEF _BASE_REG = rNR11
 ELSE
 DEF _BASE_REG = rNR21
 ENDC
-PRINT "Generating function PlayChannel_"
-PRINT \2
-PRINTLN " with register {_BASE_REG} and looping point \4"
+PRINT "Generating function PlayChannel_\2"
+PRINTLN " with register {_BASE_REG} and looping point \4 for compact use, long form"
     PlayChannel_\2:
         push de
         ldh a, [wMusicTimer\1]
@@ -219,9 +224,8 @@ DEF _BASE_REG = rNR11
 ELSE
 DEF _BASE_REG = rNR21
 ENDC
-PRINT "Generating function AudioPlay_"
-PRINT \2
-PRINTLN " with register {_BASE_REG} and looping point \4"
+PRINT "Generating function PlayChannel_\2"
+PRINTLN " with register {_BASE_REG} and looping point \4, for compact use, short form"
     PlayChannel_\2:
         push de
         ldh a, [wMusicTimer\1]
@@ -319,16 +323,17 @@ ENDM
 ; @param \1 Note (from C1 to Gb5)
 ; @param \2 Duration (in 32th notes)
 MACRO PianoNoteShort
-    ASSERT Offset\1
-    ;ASSERT ((Pitches\1 - PitchesTable) + OVERALL_TRANSPOSE) <= ((PitchesTableEnd - PitchesTable))
+    ;ASSERT Offset\1
+    ASSERT ((Pitches.\1 - PitchesTable) + OVERALL_TRANSPOSE) <= ((PitchesTableEnd - PitchesTable))
     ASSERT \2 < 64
 
-    DEF _REALOFFSET = (Offset\1 + OVERALL_TRANSPOSE) * 2
-    ;ASSERT (_REALOFFSET + PitchesTable) < PitchesTableEnd
+    ;DEF _REALOFFSET = (Offset\1 + OVERALL_TRANSPOSE) * 2
+    DEF _REALOFFSET = ((Pitches.\1) - PitchesTable) + (OVERALL_TRANSPOSE * 2)
+    ASSERT (_REALOFFSET + PitchesTable) < PitchesTableEnd
     ASSERT _REALOFFSET >= 0
     DEF _N = _REALOFFSET / 2
 
-    ; PRINTLN STRFMT("PianoNoteShort \1 duration \2 offset %d cr: %d", _N, CONVERSION_RATIO)
+    PRINTLN "PianoNoteShort \1 duration \2"
     AU_CompactMusic \
         _N, \
         \2 * CONVERSION_RATIO, \
@@ -340,7 +345,7 @@ ENDM
 ; @param \1 Duration (in 16th notes)
 MACRO PianoRestShort
 ASSERT \1 < 64
-DEBUGPLN STRFMT("PianoRest \1 cr: %d", CONVERSION_RATIO)
+PRINTLN STRFMT("PianoRest \1 cr: %d", CONVERSION_RATIO)
 AU_CompactMusic 0, \1 * CONVERSION_RATIO, 1
 ENDM
 

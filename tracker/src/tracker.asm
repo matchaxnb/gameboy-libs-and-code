@@ -181,7 +181,7 @@ MutateVisualGameStateHandler::
   CallActiveInputHandlers S, StartHandle
   CallActiveInputHandlers T, SelectHandle
   call MutateVisualGameState
-  jp PostMutateVisualGameState
+jp PostMutateVisualGameState
 
 MutateNonVisualGameState::
     ;; reminder: input bits: [Down Up Left Right Start Select B A]

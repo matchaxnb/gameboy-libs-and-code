@@ -3,16 +3,16 @@ DEF AUDIO_ENGINE_ASM EQU 0
 INCLUDE "macros/macros.inc"
 
 ;; define the normal variables
-PUSHS FRAGMENT "Variables", WRAM0
+SECTION FRAGMENT "VARIABLES", WRAM0
     wAudioFunPointer:: dw
     ; this is for storing less-critical audio state, like the current track title, and the audio play function pointer
     AudioState::
         AudioState.trackName:: ds TRACKTITLES_MAX_LENGTH + 1
-POPS
-DEF _FOO = 1
+ENDSECTION
+
 ;; define the critical audio variables
 
-PUSHS FRAGMENT "HighVars", HRAM
+SECTION FRAGMENT "HighVars", HRAM
     AudioChannelFlags::
         wMusicFlagsCH1:: db
         wMusicOffsetCH1:: db
@@ -36,7 +36,8 @@ PUSHS FRAGMENT "HighVars", HRAM
     wAudioMasterClock:: db ; top bit: pause audio if set. the rest is the game tick divider for handling audio
     wOverallOffsetPitch:: db
     wMusicTrack:: db ; top bit is the "changed" flag, the rest is the actual track num ($0-$7f)
-POPS
+ENDSECTION
+
 SECTION FRAGMENT "PROGRAM", ROM0
 /*
 The audio engine expects a function called AudioPlay that it can call to decide what audio to play.
@@ -50,6 +51,8 @@ An easy facility to declare it is using the DeclareTracks macro
 
 ;; reset flags and set new song bit when we change the audio track
 ; @param register a: track number to play ($00-$7f)
+AU_DefLoadCompactMusic
+
 Change_AudioTrack::
     push hl
     push bc
@@ -65,12 +68,12 @@ Change_AudioTrack::
         call InitMemChunk
     .cleanAudioMasterClock
         ldh a, [wAudioMasterClock]
-        and a, $7f ; clear top bit, so that audio master is clock at most 0x7f
+        and a, $7f ; clear top bit, so that we play audio
         ldh [wAudioMasterClock], a
     ; load track title from ROM to app state
     .loadTrackName
         ldh a, [wMusicTrack]
-        and $7f
+        and $7f ; clear new track bit
         ld hl, TrackNamesTable
         call GetNthEntryFromTextTable ; de <- address of the string to copy
         ld hl, AudioState.trackName
@@ -85,50 +88,50 @@ ret
 SECTION "MIDI_TABLES", ROM0[_last_section_stop]
 ;; REMEMBER dw are stored in little-endian. the MS byte is lower in address space
 PitchesTable::
-PitchesC2::	    dw  PERIOD_C2
-PitchesDb2::	dw  PERIOD_Db2 
-PitchesD2::	    dw  PERIOD_D2 
-PitchesEb2::	dw  PERIOD_Eb2 
-PitchesE2::	    dw  PERIOD_E2 
-PitchesF2::	    dw  PERIOD_F2 
-PitchesGb2::	dw  PERIOD_Gb2 
-PitchesG2::	    dw  PERIOD_G2 
-PitchesAb2::	dw  PERIOD_Ab2 
-PitchesA2::	    dw  PERIOD_A2 
-PitchesBb2::	dw  PERIOD_Bb2 
-PitchesB2::	    dw  PERIOD_B2 
-PitchesC3::	    dw  PERIOD_C3 
-PitchesDb3::	dw  PERIOD_Db3 
-PitchesD3::	    dw  PERIOD_D3 
-PitchesEb3::	dw  PERIOD_Eb3 
-PitchesE3::	    dw  PERIOD_E3 
-PitchesF3::	    dw  PERIOD_F3 
-PitchesGb3::	dw  PERIOD_Gb3 
-PitchesG3::	    dw  PERIOD_G3 
-PitchesAb3::	dw  PERIOD_Ab3 
-PitchesA3::	    dw  PERIOD_A3 
-PitchesBb3::	dw  PERIOD_Bb3 
-PitchesB3::	    dw  PERIOD_B3 
-PitchesC4::	    dw  PERIOD_C4 
-PitchesDb4::	dw  PERIOD_Db4 
-PitchesD4::	    dw  PERIOD_D4 
-PitchesEb4::	dw  PERIOD_Eb4 
-PitchesE4::	    dw  PERIOD_E4 
-PitchesF4::	    dw  PERIOD_F4 
-PitchesGb4::	dw  PERIOD_Gb4 
-PitchesG4::	    dw  PERIOD_G4 
-PitchesAb4::	dw  PERIOD_Ab4 
-PitchesA4::	    dw  PERIOD_A4 
-PitchesBb4::	dw  PERIOD_Bb4 
-PitchesB4::	    dw  PERIOD_B4 
-PitchesC5::	    dw  PERIOD_C5 
-PitchesDb5::	dw  PERIOD_Db5 
-PitchesD5::	    dw  PERIOD_D5 
-PitchesEb5::	dw  PERIOD_Eb5 
-PitchesE5::	    dw  PERIOD_E5 
-PitchesF5::	    dw  PERIOD_F5 
-PitchesGb5::	dw  PERIOD_Gb5
-PitchesSil::    dw  0
+Pitches.C2::	    dw  PERIOD_C2
+Pitches.Db2::	dw  PERIOD_Db2 
+Pitches.D2::	    dw  PERIOD_D2 
+Pitches.Eb2::	dw  PERIOD_Eb2 
+Pitches.E2::	    dw  PERIOD_E2 
+Pitches.F2::	    dw  PERIOD_F2 
+Pitches.Gb2::	dw  PERIOD_Gb2 
+Pitches.G2::	    dw  PERIOD_G2 
+Pitches.Ab2::	dw  PERIOD_Ab2 
+Pitches.A2::	    dw  PERIOD_A2 
+Pitches.Bb2::	dw  PERIOD_Bb2 
+Pitches.B2::	    dw  PERIOD_B2 
+Pitches.C3::	    dw  PERIOD_C3 
+Pitches.Db3::	dw  PERIOD_Db3 
+Pitches.D3::	    dw  PERIOD_D3 
+Pitches.Eb3::	dw  PERIOD_Eb3 
+Pitches.E3::	    dw  PERIOD_E3 
+Pitches.F3::	    dw  PERIOD_F3 
+Pitches.Gb3::	dw  PERIOD_Gb3 
+Pitches.G3::	    dw  PERIOD_G3 
+Pitches.Ab3::	dw  PERIOD_Ab3 
+Pitches.A3::	    dw  PERIOD_A3 
+Pitches.Bb3::	dw  PERIOD_Bb3 
+Pitches.B3::	    dw  PERIOD_B3 
+Pitches.C4::	    dw  PERIOD_C4 
+Pitches.Db4::	dw  PERIOD_Db4 
+Pitches.D4::	    dw  PERIOD_D4 
+Pitches.Eb4::	dw  PERIOD_Eb4 
+Pitches.E4::	    dw  PERIOD_E4 
+Pitches.F4::	    dw  PERIOD_F4 
+Pitches.Gb4::	dw  PERIOD_Gb4 
+Pitches.G4::	    dw  PERIOD_G4 
+Pitches.Ab4::	dw  PERIOD_Ab4 
+Pitches.A4::	    dw  PERIOD_A4 
+Pitches.Bb4::	dw  PERIOD_Bb4 
+Pitches.B4::	    dw  PERIOD_B4 
+Pitches.C5::	    dw  PERIOD_C5 
+Pitches.Db5::	dw  PERIOD_Db5 
+Pitches.D5::	    dw  PERIOD_D5 
+Pitches.Eb5::	dw  PERIOD_Eb5 
+Pitches.E5::	    dw  PERIOD_E5 
+Pitches.F5::	    dw  PERIOD_F5 
+Pitches.Gb5::	dw  PERIOD_Gb5
+Pitches.Sil::    dw  0
 PitchesTableEnd::
 
 ENDSECTION
