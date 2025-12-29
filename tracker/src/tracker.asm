@@ -61,6 +61,7 @@ LoadAsciiTileset:
   ld bc, ASCII_TILES_SIZE
   ld de, AsciiTiles + ASCII_TILES_SKIPLOAD ; skip the first tile, which is blank
   WaitForVBlank_mutateshl
+  DisableLCD
   ld hl, CHARS_LOCATION
   call Memcopy
   EnableLCD
@@ -169,6 +170,7 @@ ret
 MutateNonVisualGameStateHandler::
     call MutateNonVisualGameState
     jp PostMutateNonVisualGameState
+
 MutateVisualGameStateHandler::
   CallActiveInputHandlers UD, UpDownHandle
   CallActiveInputHandlers LR, LeftRightHandle
