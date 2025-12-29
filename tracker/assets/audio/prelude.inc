@@ -1,0 +1,109 @@
+INCLUDE "macros/macros.inc"
+IF !DEF(PianoNote)
+FAIL "You must include macros/audio_detailed.asm"
+ENDC
+
+DEF CURFILE EQUS "prelude.asm"
+DEF BWV846_NOTEVOL = 15
+DEF BWV846_ENVSPD  = 6
+DEF BWV846_ENVSPD_BASS  = 1
+
+DEF BWV846_BPM = 108
+IF DEF(CONVERSION_RATIO)
+PURGE CONVERSION_RATIO
+ENDC
+DEF CONVERSION_RATIO = 1
+IF DEF(PIANO_DUTY_CYCLE)
+PURGE PIANO_DUTY_CYCLE
+ENDC
+DEF PIANO_DUTY_CYCLE = %10
+PRINTLN "Conversion ratio for {CURFILE} is {CONVERSION_RATIO}"
+
+BWV846:
+BWV846_Bass:
+
+
+;; duration (2 + 6) * 2 = 16
+; bar 1
+PRINTLN "Bass: BAR 1"
+REPT 2
+PianoNote C3, 1
+PianoNote E3, 6
+PianoRest 1
+ENDR
+
+PRINTLN "Bass: BAR 2"
+; bar 2
+REPT 2
+PianoNote C3, 1
+PianoNote D3, 6
+PianoRest 1
+ENDR
+
+PRINTLN "Bass: BAR 3"
+; bar 3
+REPT 2
+PianoNote B2, 1
+PianoNote D3, 6
+PianoRest 1
+
+ENDR
+
+PRINTLN "Bass: BAR 4"
+; bar 4
+REPT 2
+PianoNote C3, 1
+PianoNote E3, 6
+PianoRest 1
+ENDR
+
+
+
+BWV846_BassEnd:
+
+BWV846_Treble:
+; bar 1
+PRINTLN "Treble: BAR 1"
+REPT 2
+    PianoRest 2
+    REPT 2
+        PianoNote G3, 1
+        PianoNote C4, 1
+        PianoNote E4, 1
+    ENDR
+ENDR
+
+PRINTLN "Treble: BAR 2"
+; bar 2
+REPT 2
+    PianoRest 2
+    REPT 2
+        PianoNote A3, 1
+        PianoNote D4, 1
+        PianoNote F4, 1
+    ENDR
+ENDR
+
+PRINTLN "Treble: BAR 3"
+; bar 3
+REPT 2
+    PianoRest 2
+    REPT 2
+        PianoNote G3, 1
+        PianoNote D4, 1
+        PianoNote F4, 1
+    ENDR
+ENDR
+
+PRINTLN "Treble: BAR 4"
+; bar 4
+REPT 2
+    PianoRest 2
+    REPT 2
+        PianoNote G3, 1
+        PianoNote C4, 1
+        PianoNote E4, 1
+    ENDR
+ENDR
+
+BWV846_TrebleEnd:

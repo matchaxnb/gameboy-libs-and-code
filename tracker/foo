@@ -1,0 +1,10 @@
+build/fw-obj/baseblocks/audio_engine.obj: ../common/baseblocks/audio_engine.asm
+build/fw-obj/baseblocks/audio_engine.obj: config/config.asm
+build/fw-obj/baseblocks/audio_engine.obj: ../defines/palettes.inc
+build/fw-obj/baseblocks/audio_engine.obj: ../defines/hardware.inc
+build/fw-obj/baseblocks/audio_engine.obj: ../common/macros/macros.inc
+build/fw-obj/baseblocks/audio_engine.obj: ../common/macros/audio_base.inc
+build/fw-obj/baseblocks/audio_engine.obj: ../common/macros/audio_midi.inc
+build/fw-obj/baseblocks/audio_engine.obj: ../common/macros/compact_audio.inc
+build/fw-obj/baseblocks/audio_engine.obj: ../common/macros/audio_offsets.inc
+build/fw-obj/baseblocks/audio_engine.obj: ../common/macros/general_macros.inc

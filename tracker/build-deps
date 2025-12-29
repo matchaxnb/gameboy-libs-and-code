@@ -1,0 +1,11 @@
+build/obj/tracker.obj: src/tracker.asm
+build/obj/tracker.obj: config/config.asm
+build/obj/tracker.obj: /home/matcha/gameboy-libs-and-code/defines/palettes.inc
+build/obj/tracker.obj: /home/matcha/gameboy-libs-and-code/defines/hardware.inc
+build/obj/tracker.obj: /home/matcha/gameboy-libs-and-code/common/macros/macros.inc
+build/obj/tracker.obj: /home/matcha/gameboy-libs-and-code/common/macros/audio_base.inc
+build/obj/tracker.obj: /home/matcha/gameboy-libs-and-code/common/macros/audio_midi.inc
+build/obj/tracker.obj: /home/matcha/gameboy-libs-and-code/common/macros/compact_audio.inc
+build/obj/tracker.obj: /home/matcha/gameboy-libs-and-code/common/macros/audio_offsets.inc
+build/obj/tracker.obj: /home/matcha/gameboy-libs-and-code/common/macros/general_macros.inc
+build/obj/tracker.obj: src/custom/constants.inc
