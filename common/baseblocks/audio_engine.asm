@@ -3,7 +3,7 @@ DEF AUDIO_ENGINE_ASM EQU 0
 INCLUDE "macros/macros.inc"
 
 ;; define the normal variables
-PUSHS "AudioVariables", WRAM0
+PUSHS FRAGMENT "Variables", WRAM0
     wAudioFunPointer:: dw
     ; this is for storing less-critical audio state, like the current track title, and the audio play function pointer
     AudioState::
@@ -12,7 +12,7 @@ POPS
 DEF _FOO = 1
 ;; define the critical audio variables
 
-PUSHS "AudioHighVars", HRAM
+PUSHS FRAGMENT "HighVars", HRAM
     AudioChannelFlags::
         wMusicFlagsCH1:: db
         wMusicOffsetCH1:: db
@@ -82,7 +82,7 @@ Change_AudioTrack::
     pop hl
 ret
 
-SECTION "MIDI_TABLES", ROM0
+SECTION "MIDI_TABLES", ROM0[_last_section_stop]
 ;; REMEMBER dw are stored in little-endian. the MS byte is lower in address space
 PitchesTable::
 PitchesC2::	    dw  PERIOD_C2
@@ -131,45 +131,6 @@ PitchesGb5::	dw  PERIOD_Gb5
 PitchesSil::    dw  0
 PitchesTableEnd::
 
-
-
-;AudioPlay:
-;    push af
-;    push de
-;    ldh a, [wAudioMasterClock] ; load audio master clock
-;    bit 7, a
-;    jr nz, .audioPlayEnd ; if the "pause audio" bit is set, skip
-;    ld d, a
-;    ldh a, [wFrameCounter] ; load frame counter    
-;    and d ; compare to master clock
-;    cp d
-;    jr nz, .audioPlayEnd ;; if we are not in a frame matching the master clock, shortcut to the end
-;    ldh a, [wMusicTrack]
-;    bit 7, a ; is the "changed" bit set in wMusicTrack
-;    jr z, .callFun ; if not, just call the function
-;    ;; the "changed" bit is set, reset it and process data
-;    and a, $7f ; reset top bit
-;    ldh [wMusicTrack], a
-;    ; now match the track num
-;    .testMyMotif
-;        cp a, TRK_MYMOTIF
-;        jr nz, .notMyMotif
-;        StoreFunctionPointer AudioPlay_MyMotif, wAudioFunPointer
-;    .notMyMotif
-;        cp a, TRK_PRELUDE
-;        jr nz, .notPrelude
-;        StoreFunctionPointer AudioPlay_Prelude, wAudioFunPointer
-;    .notPrelude
-;        cp a, TRK_DIATONIC_C
-;        jp nz, .notDiatonicC
-;        StoreFunctionPointer AudioPlay_DiatonicC, wAudioFunPointer
-;.notDiatonicC
-;.callFun
-;    CallFunctionPointer wAudioFunPointer
-;.audioPlayEnd
-;    pop de
-;    pop af
-;ret
-;
-
+ENDSECTION
+REDEF _last_section_stop = STARTOF("MIDI_TABLES") + SIZEOF("MIDI_TABLES")
 ENDC ; include guard

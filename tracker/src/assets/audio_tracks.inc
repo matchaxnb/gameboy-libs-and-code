@@ -10,7 +10,7 @@ DEF LP_DIATONIC_C_BASS = 2
 DEF LP_DIATONIC_C_TREBLE = 2
 
 
-PUSHS "MusicAssets", ROM0[MUSIC_ASSETS_LOCATION]
+SECTION "MusicAssets", ROM0[_last_section_stop]
 
 ; INCLUDE "assets/audio/prelude.asm" ; uses long-form audio, disabled
 ; INCLUDE "assets/audio/prelude_full.asm"  ; uses long-form audio, disabled
@@ -21,9 +21,9 @@ INCLUDE "assets/audio/diatonic_c.inc"
 ;INCLUDE "assets/audio/mymotif.inc"
 MusicTracksEnd::
 
-POPS
+ENDSECTION
+REDEF _last_section_stop = STARTOF("MusicAssets") + SIZEOF("MusicAssets")
 
-PUSHS
 SECTION FRAGMENT "PROGRAM", ROM0
 
 ;DEF DUR_PRELUDE_C_BASS = (BWV846_BassEnd - BWV846_Bass) / DETAILED_AUDIO_PKTSIZE
@@ -79,6 +79,5 @@ ret
 ;    1, TrkMyMotif, \
 ;    2, TrkDiatonicC
 DeclareTracks 0, TrkDiatonicC
-POPS
 
 ENDC

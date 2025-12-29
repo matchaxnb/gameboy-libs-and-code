@@ -1,6 +1,14 @@
 IF !DEF(INTERRUPTS_ASM)
 DEF INTERRUPTS_ASM EQU 0
 
+PUSHS FRAGMENT "HighVars", HRAM
+inVBlank:: db
+;; time keeping
+wTimeCounter:: db
+wFrameCounter:: db
+wFrameCounter60:: db ; 0 <=  x <= 60
+wSecCounter:: db
+POPS
 SECTION "VBLANKINT", ROM0[$0040]
 push af
 push bc
@@ -26,7 +34,7 @@ nop
 ; 
 ; ds SIZEOF("TIMERINT"), 0
 
-SECTION FRAGMENT "INTERRUPT_HANDLERS", ROM0
+SECTION "INTERRUPT_HANDLERS", ROM0[_last_section_stop]
 StatInterruptHandler::
   ;; teehee, magic
   jr .out
@@ -81,5 +89,7 @@ VBlankInterruptHandler::
   pop bc
   pop af
 reti
+ENDSECTION
+REDEF _last_section_stop = STARTOF("INTERRUPT_HANDLERS") + SIZEOF("INTERRUPT_HANDLERS")
 
 ENDC

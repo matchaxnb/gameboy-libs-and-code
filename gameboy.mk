@@ -1,33 +1,64 @@
-.PRECIOUS: %.sym %.tbl %.o
-.PHONY = (clean $(PROJECT_NAME) asses objs)
-PARENT_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-RGBASM = "rgbasm"
-RGBASM_ARGS = -I . -I $(PARENT_DIR)/defines -I $(PARENT_DIR) -I $(PARENT_DIR)/common
+.PRECIOUS: %.obj %.tbl %.sym
+TOP_LEVEL_DIR   := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
+rwildcard       =   $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+ASM             :=  rgbasm
+LINKER          :=  rgblink
+FIX             :=  rgbfix
+BUILD_DIR       :=  build
+COMMON_DIR		:=  common
+PROJECT_NAME    ?=  
+OUTPUT          :=  $(BUILD_DIR)/$(PROJECT_NAME)
+SRC_DIR         :=  src
+CONF_DIR		:=  config
+INC_ARGS        :=  -I $(TOP_LEVEL_DIR)/common -I .
+SRC_ASM         :=  $(call rwildcard, $(SRC_DIR)/, *.asm)
+FW_ASM			:= $(call rwildcard, $(TOP_LEVEL_DIR)/$(COMMON_DIR)/framework, *.asm)
+OBJ_FILES       :=  $(addprefix $(BUILD_DIR)/obj/, $(SRC_ASM:src/%.asm=%.obj))
+#FW_OBJ_FILES    :=  $(addprefix $(BUILD_DIR)/fw-obj/, $(FW_ASM:$(TOP_LEVEL_DIR)/common/framework/%.asm=%.obj))
+OBJ_DIRS        :=  $(addprefix $(BUILD_DIR)/obj/, $(dir $(SRC_ASM:src/%.asm=%.obj)))
+#FW_OBJ_DIRS     :=  $(addprefix $(BUILD_DIR)/fw-obj/, $(dir $(FW_ASM:$(TOP_LEVEL_DIR)/common/framework/%.asm=%.obj)))
+ASMFLAGS        :=  -p0 -v  $(INC_ARGS) -P defines/hardware.inc -P defines/palettes.inc -P $(CONF_DIR)/config.asm -P framework/_all.asm
+#LINKERFLAGS     :=  -m $(OUTPUT).tbl -n $(OUTPUT).sym -l $(CONF_DIR)/layout.rgblink -d
+LINKERFLAGS     :=  -m $(OUTPUT).tbl -n $(OUTPUT).sym -d
+FIXFLAGS        :=  -v -p0xff
+ASSETS_SRC =  $(wildcard */*/*.png) $(wildcard */*/*.map)
+ASSETS_DST =  $(patsubst %.png,%.2bpp,$(wildcard */*/*.png)) $(patsubst %.map,%.binmap, $(wildcard */*/*.map))
+
+
+
+.PHONY: all clean asses show default
+
+default: clean all
+show:
+	@echo "Fw obj dirs is $(FW_OBJ_DIRS)"
+	@echo "Obj dirs is $(OBJ_DIRS)"
+	@echo "Fw obj files is $(FW_OBJ_FILES)"
+	@echo "obj files is $(OBJ_FILES)"
+
+all: asses $(OUTPUT).gb
+    
+$(OUTPUT).gb: $(BUILD_DIR) asses
+	$(FIX) $(FIXFLAGS) $(OUTPUT).gb
+
+$(BUILD_DIR): $(OBJ_FILES)
+	$(LINKER) -o $(OUTPUT).gb $(LINKERFLAGS) $(OBJ_FILES) 
+
+#$(BUILD_DIR)/fw-obj/%.obj : $(TOP_LEVEL_DIR)/common/framework/%.asm | $(FW_OBJ_DIRS)
+#	$(ASM) -o $@  $(ASMFLAGS) $<
+
+$(BUILD_DIR)/obj/%.obj : src/%.asm $(OBJ_DIRS)
+	$(ASM) -o $@ $(ASMFLAGS) $<
+
+$(OBJ_DIRS):
+	mkdir -p $@
+
+#$(FW_OBJ_DIRS):
+#	mkdir -p $@
+
 clean:
-	rm -vf *.o *.sym *.gb **/*.o **/*.sym **/*.gb
-	find . -name '*.2bpp' -delete
-	find . -name '*.2bpp.pal' -delete
-	find . -name '*.2bpp.tilemap' -delete
+	rm -rf $(BUILD_DIR)
 
-%.o: %.asm ../hardware.inc
-	@echo Compiling $@ from $<
-	pwd
-	$(RGBASM) $(RGBASM_ARGS) -o $@ $<
+asses: $(ASSETS_DST)
+	make $(ASSETS_DST) > /dev/null
 
-%.sym: %.o
-	@echo About to output $@ from $<
-	rgblink -m $(patsubst %.sym,%.tbl,$@) -n $@ $<
-
-%.gb: %.o %.sym */*.asm *.asm
-	@echo About to output $@
-	rgblink -m $(patsubst %.gb,%.tbl,$@) -o $@ $<
-	rgbfix -v -p 0xff $@
-
-%.2bpp: %.png
-	rgbgfx -u $< -o $@ -t $@.tilemap -c auto
-
-%.binmap: %.txtmap _utils/build-tilemap.py
-	python ../_utils/build-tilemap.py $< $@
-
-
-$(PROJECT_NAME): $(PROJECT_NAME).gb $(PROJECT_NAME).sym
+print-%  : ; @echo $* = $($*)

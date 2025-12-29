@@ -1,8 +1,7 @@
 IF !DEF(MEMORY_MAP_GBASM)
 DEF MEMORY_MAP_GBASM = 0
-SECTION "VARIABLES", WRAM0
+PUSHS FRAGMENT "VARIABLES", WRAM0
 GlobalVariables::
-    wLastUpdatedInput:: db
     wCurrentTilemap:: dw
     wCurrentTilemapOffset:: db ; offset-127 value
     wCurrentWindowTilemap:: dw
@@ -24,22 +23,12 @@ GlobalVariablesEnd::
 
 VariablesEnd:
 ;; this defines the GameState structure
-
+POPS
 SECTION "TileSets", VRAM
 
 
-SECTION FRAGMENT "HighVars", HRAM
+PUSHS FRAGMENT "HighVars", HRAM
 FirstHRAMEntry::
-inVBlank:: db
-wCurKeys:: db   ; current pressed keys
-wPrevKeys:: db  ; previously pressed keys
-wNewlyPressed:: db ; keys that 
-wNewlyReleased:: db
-;; time keeping
-wTimeCounter:: db
-wFrameCounter:: db
-wFrameCounter60:: db ; 0 <=  x <= 60
-wSecCounter:: db
-
+POPS
 
 ENDC

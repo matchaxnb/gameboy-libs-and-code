@@ -1,6 +1,7 @@
 INCLUDE "macros/macros.inc"
 INCLUDE "src/assets/assets.inc"
 INCLUDE "src/assets/audio_tracks.inc"
+INCLUDE "src/assets/tables.inc"
 DEF UpActiveChar = GFX_TILES_OFFSET + 12; CHARVAL("U")
 DEF UpInactiveChar = GFX_TILES_OFFSET + 11
 DEF DownActiveChar = GFX_TILES_OFFSET + 14
@@ -70,6 +71,7 @@ ret
 LastInputsHandle:
 
 ret
+
 ; importantly this doesn't mutate a
 UpDownHandle:
 

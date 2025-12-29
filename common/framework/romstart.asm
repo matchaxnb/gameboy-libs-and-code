@@ -13,13 +13,9 @@ SECTION "HEADER", ROM0[$0100]
   jp EntryPoint
   ds $150 - @, $00 ; room for the nintendo logo
 
-SECTION FRAGMENT "PROGRAM", ROM0
-Libraries::
-INCLUDE "libs/all_libs.asm"
-EndLibraries::
-
 SECTION "STARTUPCODE", ROM0[$150]
 jp EntryPoint
+ENDSECTION
 
-
+DEF _last_section_stop = STARTOF("STARTUPCODE") + SIZEOF("STARTUPCODE")
 ENDC

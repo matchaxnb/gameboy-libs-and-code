@@ -2,35 +2,39 @@ IF !DEF(ASSETS_ASM)
 DEF ASSETS_ASM EQU 0
 INCLUDE "macros/macros.inc"
 ;;; this loads the binary data / assets into the ROM
-SECTION "GraphicsData", ROM0[$2000], ALIGN[8]
-TilesROM::
-;; uitiles include already a blank tile
-UITiles::
-INCBIN "assets/tiles/ui-base-tilemap.2bpp"
-UITilesEnd::
-TilesROMEnd::
-MusicalTiles::
-INCBIN "assets/tiles/musical-elements.2bpp"
-MusicalTilesEnd::
-SpritesROM::
-INCBIN "assets/tiles/sprites-tracker.2bpp"
-SpritesROMEnd::
-AsciiTiles::
-INCBIN "assets/tiles/ascii-basic.2bpp"
-AsciiTilesEnd::
-TileMaps::
-TrackerUI::
-INCLUDE "assets/screens/tracker-ui.inc"
-TrackerUIEnd::
-TileMapsEnd::
+SECTION "GRAPHICS_DATA", ROM0[_last_section_stop]
+    TilesROM::
+    ;; uitiles include already a blank tile
+    UITiles::
+    INCBIN "assets/tiles/ui-base-tilemap.2bpp"
+    UITilesEnd::
+    TilesROMEnd::
+    MusicalTiles::
+    INCBIN "assets/tiles/musical-elements.2bpp"
+    MusicalTilesEnd::
+    SpritesROM::
+    INCBIN "assets/tiles/sprites-tracker.2bpp"
+    SpritesROMEnd::
+    AsciiTiles::
+    INCBIN "assets/tiles/ascii-basic.2bpp"
+    AsciiTilesEnd::
+    TileMaps::
+    TrackerUI::
+    INCLUDE "assets/screens/tracker-ui.inc"
+    TrackerUIEnd::
+    TileMapsEnd::
+    
+ENDSECTION
 
+REDEF _last_section_stop = STARTOF("GRAPHICS_DATA") + SIZEOF("GRAPHICS_DATA")
     ;;; this defines a set of constants (load after assets are referenced)
 ;;; but before we do any init
 ;;; this must contain no code, just DEF and asserts
 EXPORT DEF TILES_LOCATION = _VRAM8000
 EXPORT DEF CHARS_LOCATION = _VRAM8800
-EXPORT DEF TILES_ROM_LOCATION = TilesROM
 EXPORT DEF TILEMAP_LOCATION = TILES_LOCATION + $0800
+
+EXPORT DEF TILES_ROM_LOCATION = TilesROM
 
 ;; layout: UI tiles, then Musical tiles, then the rest
 EXPORT DEF ASCII_TILES_SKIPLOAD = 16

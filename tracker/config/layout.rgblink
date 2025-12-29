@@ -15,12 +15,10 @@ ROM0 $0
     ORG $100
     "HEADER"
     ORG $150
-    "STARTUPCODE"
-    ORG $154
-    "INTERRUPT_HANDLERS"
-    DS $100
-    "PROGRAM"
-    "MIDI_TABLES"
-    "BOOTSTRAPCODE"
-    ORG $2000
-    "GraphicsData"
+    ;"STARTUPCODE"
+    ;"INTERRUPT_HANDLERS"
+    ;"MIDI_TABLES"
+    ;"TEXT_TABLES"
+    ;"BOOTSTRAPCODE"
+    ;"GRAPHICS_DATA"
+    ;"PROGRAM"

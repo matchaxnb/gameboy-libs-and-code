@@ -2,7 +2,7 @@ IF !DEF(BASEBLOCKS_BOOTSTRAP_GBASM)
 DEF BASEBLOCKS_BOOTSTRAP_GBASM EQU 0
 
 INCLUDE "macros/macros.inc"
-SECTION "BOOTSTRAPCODE", ROM0
+SECTION "BOOTSTRAPCODE", ROM0[_last_section_stop]
 EntryPoint::
 ; turn off the screen
 DisableLCD
@@ -88,12 +88,6 @@ EnableLCD
 
 jp StartGame
 
-
-
-
-
-
-
-
-
+ENDSECTION
+REDEF _last_section_stop = STARTOF("BOOTSTRAPCODE") + SIZEOF("BOOTSTRAPCODE")
 ENDC

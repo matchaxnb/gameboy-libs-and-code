@@ -1,6 +1,18 @@
 IF !DEF(LIBS_INPUT_ASM)
 DEF LIBS_INPUT_ASM = 0
 ;; format:
+
+PUSHS FRAGMENT "Variables", WRAM0
+    wLastUpdatedInput:: db
+POPS
+
+PUSHS FRAGMENT "HighVars", HRAM
+wCurKeys:: db   ; current pressed keys
+wPrevKeys:: db  ; previously pressed keys
+wNewlyPressed:: db ; keys that 
+wNewlyReleased:: db
+POPS
+
 SECTION FRAGMENT "PROGRAM", ROM0
 
 ; poll input
