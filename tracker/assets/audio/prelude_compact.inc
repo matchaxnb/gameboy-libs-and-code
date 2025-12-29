@@ -274,6 +274,7 @@ AU_CompactAdjustment %10, 15, 0, 0
 
 PianoNoteShort C4, 16
 
+PianoRestShort 48
 BWV846Compact_BassEnd:
 
 
@@ -648,6 +649,7 @@ AU_CompactAdjustment %00, 13, 0, 0
 
 PianoNoteShort E4, 16
 
+PianoRestShort 48
 DEF OVERALL_TRANSPOSE = 0
 
 BWV846Compact_TrebleEnd:
