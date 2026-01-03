@@ -59,6 +59,6 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 asses: $(ASSETS_DST)
-	make $(ASSETS_DST) > /dev/null
+	test ! "$(ASSETS_DST)" = " " && make $(ASSETS_DST) > /dev/null || exit 0
 
 print-%  : ; @echo $* = $($*)

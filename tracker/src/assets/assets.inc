@@ -30,9 +30,7 @@ REDEF _last_section_stop = STARTOF("GRAPHICS_DATA") + SIZEOF("GRAPHICS_DATA")
     ;;; this defines a set of constants (load after assets are referenced)
 ;;; but before we do any init
 ;;; this must contain no code, just DEF and asserts
-EXPORT DEF TILES_LOCATION = _VRAM8000
-EXPORT DEF CHARS_LOCATION = _VRAM8800
-EXPORT DEF TILEMAP_LOCATION = TILES_LOCATION + $0800
+
 
 EXPORT DEF TILES_ROM_LOCATION = TilesROM
 

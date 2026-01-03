@@ -53,6 +53,8 @@ An easy facility to declare it is using the DeclareTracks macro
 ; @param register a: track number to play ($00-$7f)
 AU_DefLoadCompactMusic
 
+
+
 Change_AudioTrack::
     push hl
     push bc
@@ -70,15 +72,16 @@ Change_AudioTrack::
         ldh a, [wAudioMasterClock]
         and a, $7f ; clear top bit, so that we play audio
         ldh [wAudioMasterClock], a
-    ; load track title from ROM to app state
-    .loadTrackName
-        ldh a, [wMusicTrack]
-        and $7f ; clear new track bit
-        ld hl, TrackNamesTable
-        call GetNthEntryFromTextTable ; de <- address of the string to copy
-        ld hl, AudioState.trackName
-        ld c, TRACKTITLES_MAX_LENGTH
-        call StrCpyWithCleanup ; hl: Target, de: Source, c: Lengthexpected
+    IF (USE_TRACKTITLES)
+        .loadTrackName:
+                ldh a, [wMusicTrack]
+                and $7f ; clear new track bit
+                ld hl, TrackNamesTable
+                call GetNthEntryFromTextTable ; de <- address of the string to copy
+                ld hl, AudioState.trackName
+                ld c, TRACKTITLES_MAX_LENGTH
+                call StrCpyWithCleanup ; hl: Target, de: Source, c: Lengthexpected
+    ENDC
     pop af
     pop de
     pop bc

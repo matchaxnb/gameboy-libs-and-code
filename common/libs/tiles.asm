@@ -64,7 +64,7 @@ MergeTiles:
   ;; merging is just OR-ing the 16 bytes, 1 pair at a time
   ;; estimated duration: 16 * (2 + 2 + 1 + 1 + 2 + 1) = 144 cycles
   ;; each pixel take 9 cycles
-  REPT 16
+  REPT 16 ;; maybe consider managing a loop instead of unrolling it?
   ld a, [bc]  ; costs 2
   or a, [hl] ; a now contains bc | hl ; costs 2
   ld [de], a ; costs 2
@@ -73,61 +73,72 @@ MergeTiles:
   inc de ; costs 1
   ENDR
 ret
-; @param a  Tile 1 by index to merge
-; @param b  Tile 2 by index to merge
-; @param d  Target tile ID (will be in VRAM)
-; Merge together 2 tiles from ROM to RAM
-; If you are targeting VRAM, you can do it
-; only during VBlank but you'll get an addressable tile directly
-MergeTilesByID:
-  ;; merging is just OR-ing the 16 bytes, 1 pair at a time
-  ld hl, 0
-  cp a, 0
-  jr z, .doneOffsetA
-  ld hl, 16 ; size of a tile in bytes
-  .offsetA
-    add hl, hl
-    dec a
-    jr nz, .offsetA
-  .doneOffsetA
-  ld a, b ; A <- B
-  ld bc, TILES_ROM_LOCATION
-  add hl, bc ; now hl contains the address of the tile
-  push hl ; store the computed address for tile 1 on stack
-  ;; handle B now
-  ld hl, 0
-  cp a, 0
-  jr z, .doneOffsetB
-  ld hl, 16
-  .offsetB
-    add hl, hl
-    dec a
-    jr nz, .offsetB
-  .doneOffsetB
-  ld bc, TILES_ROM_LOCATION
-  add hl, bc ; now hl contains the address of tile 2
-  push hl ; push the second address on stack
-  ;; handle D now
-  ld a, d
-  ld hl, 0
-  cp a, 0
-  jr z, .doneOffsetD
-  ld hl, 16
-  .offsetD
-    add hl, hl
-    dec a
-    jr nz, .offsetD
-  .doneOffsetD
-  ld bc, TILES_LOCATION ; this is in VRAM
-  add hl, bc ; now hl contains the destination address
-  ldr16 de, hl ; <- de, hl
-  pop hl
-  pop bc
-  WaitForVBlank
-  jp MergeTiles ;; 
-ret
 
-
+; generates a function MergeTilesByID that, when called,
+; merges two tiles into a third tile.
+; @param \1 Tile location in the ROM
+MACRO Generate_MergeTilesByID
+  IF DEF(MergeTilesByID)
+    FAIL "Can only call Generate_MergeTilesByID once"
+  ENDC
+  ASSERT DEF(\1)
+  DEF TILES_ROM_LOCATION EQU \1
+  ;; FUNCTION DOCS:
+  ;; Merges tiles 1 and 2 into a target tile
+  ;; @param a  Tile 1 by index to merge
+  ;; @param b  Tile 2 by index to merge
+  ;; @param d  Target tile ID (will be in VRAM)
+  ;; Merge together 2 tiles from ROM to RAM
+  ;; If you are targeting VRAM, you can do it
+  ;; only during VBlank but you'll get an addressable tile directly
+  MergeTilesByID:
+    ;; merging is just OR-ing the 16 bytes, 1 pair at a time
+    ld hl, 0
+    cp a, 0
+    jr z, .doneOffsetA
+    ld hl, 16 ; size of a tile in bytes
+    .offsetA
+      add hl, hl
+      dec a
+      jr nz, .offsetA
+    .doneOffsetA
+    ld a, b ; A <- B
+    ld bc, TILES_ROM_LOCATION
+    add hl, bc ; now hl contains the address of the tile
+    push hl ; store the computed address for tile 1 on stack
+    ;; handle B now
+    ld hl, 0
+    cp a, 0
+    jr z, .doneOffsetB
+    ld hl, 16
+    .offsetB
+      add hl, hl
+      dec a
+      jr nz, .offsetB
+    .doneOffsetB
+    ld bc, TILES_ROM_LOCATION
+    add hl, bc ; now hl contains the address of tile 2
+    push hl ; push the second address on stack
+    ;; handle D now
+    ld a, d
+    ld hl, 0
+    cp a, 0
+    jr z, .doneOffsetD
+    ld hl, 16
+    .offsetD
+      add hl, hl
+      dec a
+      jr nz, .offsetD
+    .doneOffsetD
+    ld bc, TILES_LOCATION ; this is in VRAM
+    add hl, bc ; now hl contains the destination address
+    ldr16 de, hl ; <- de, hl
+    pop hl
+    pop bc
+    WaitForVBlank
+    jp MergeTiles ;; 
+  ret
+ENDM
 
 LoadTileset:
   

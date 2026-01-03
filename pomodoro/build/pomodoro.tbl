@@ -1,0 +1,278 @@
+SUMMARY:
+	ROM0: 1722 bytes used / 14662 free
+	WRAM0: 27 bytes used / 8165 free
+	HRAM: 24 bytes used / 103 free
+
+ROM0 bank #0:
+	SECTION: $0000-$003f ($0040 bytes) ["RESERVED"]
+	SECTION: $0040-$0046 ($0007 bytes) ["VBLANKINT"]
+	EMPTY: $0047-$0047 ($0001 byte)
+	SECTION: $0048-$004d ($0006 bytes) ["STATINT"]
+	EMPTY: $004e-$00ff ($00b2 bytes)
+	SECTION: $0100-$014f ($0050 bytes) ["HEADER"]
+	SECTION: $0150-$0152 ($0003 bytes) ["STARTUPCODE"]
+	SECTION: $0153-$0198 ($0046 bytes) ["INTERRUPT_HANDLERS"]
+	         $0153 = StatInterruptHandler
+	         $0160 = StatInterruptHandler.alt
+	         $0163 = StatInterruptHandler.out
+	         $0165 = VBlankInterruptHandler
+	         $0178 = VBlankInterruptHandler.noCarry
+	         $018c = VBlankInterruptHandler.noIncSec
+	         $018f = VBlankInterruptHandler.end
+	         $0194 = VBlankInterruptHandler.out
+	SECTION: $0199-$01f0 ($0058 bytes) ["MIDI_TABLES"]
+	         $0199 = PitchesTable
+	         $0199 = Pitches.C2
+	         $019b = Pitches.Db2
+	         $019d = Pitches.D2
+	         $019f = Pitches.Eb2
+	         $01a1 = Pitches.E2
+	         $01a3 = Pitches.F2
+	         $01a5 = Pitches.Gb2
+	         $01a7 = Pitches.G2
+	         $01a9 = Pitches.Ab2
+	         $01ab = Pitches.A2
+	         $01ad = Pitches.Bb2
+	         $01af = Pitches.B2
+	         $01b1 = Pitches.C3
+	         $01b3 = Pitches.Db3
+	         $01b5 = Pitches.D3
+	         $01b7 = Pitches.Eb3
+	         $01b9 = Pitches.E3
+	         $01bb = Pitches.F3
+	         $01bd = Pitches.Gb3
+	         $01bf = Pitches.G3
+	         $01c1 = Pitches.Ab3
+	         $01c3 = Pitches.A3
+	         $01c5 = Pitches.Bb3
+	         $01c7 = Pitches.B3
+	         $01c9 = Pitches.C4
+	         $01cb = Pitches.Db4
+	         $01cd = Pitches.D4
+	         $01cf = Pitches.Eb4
+	         $01d1 = Pitches.E4
+	         $01d3 = Pitches.F4
+	         $01d5 = Pitches.Gb4
+	         $01d7 = Pitches.G4
+	         $01d9 = Pitches.Ab4
+	         $01db = Pitches.A4
+	         $01dd = Pitches.Bb4
+	         $01df = Pitches.B4
+	         $01e1 = Pitches.C5
+	         $01e3 = Pitches.Db5
+	         $01e5 = Pitches.D5
+	         $01e7 = Pitches.Eb5
+	         $01e9 = Pitches.E5
+	         $01eb = Pitches.F5
+	         $01ed = Pitches.Gb5
+	         $01ef = Pitches.Sil
+	         $01f1 = PitchesTableEnd
+	SECTION: $01f1-$026a ($007a bytes) ["BOOTSTRAPCODE"]
+	         $01f1 = EntryPoint
+	         $023d = EntryPoint.PrepareForVRAMWrite_u4
+	         $0248 = EntryPoint.waitVbl_u5
+	         $024e = EntryPoint.out_u5
+	         $0261 = PostSetupTiles
+	         $0264 = PostSetupTilemaps
+	SECTION: $026b-$02e0 ($0076 bytes) ["MusicAssets"]
+	         $026b = MyMotif
+	         $026b = MyMotif_Bass
+	         $02a7 = MyMotif_Treble
+	         $02a7 = MyMotif_BassEnd
+	         $02e1 = MyMotif_TrebleEnd
+	SECTION: $02e1-$076c ($048c bytes) ["PROGRAM"]
+	         $02e1 = LoadCompactMusicCH1
+	         $02ea = LoadCompactMusicCH1.adjustmentFlagSetCH1
+	         $0306 = LoadCompactMusicCH1.postAdjustmentFlagSetCH1
+	         $030a = LoadCompactMusicCH1.silence_u1
+	         $0319 = LoadCompactMusicCH1.postSilence_u1
+	         $0319 = LoadCompactMusicCH1.happyFlow_u1
+	         $0330 = LoadCompactMusicCH1.exit_u1CH1
+	         $0334 = LoadCompactMusicCH2
+	         $033d = LoadCompactMusicCH2.adjustmentFlagSetCH2
+	         $0359 = LoadCompactMusicCH2.postAdjustmentFlagSetCH2
+	         $035d = LoadCompactMusicCH2.silence_u2
+	         $036c = LoadCompactMusicCH2.postSilence_u2
+	         $036c = LoadCompactMusicCH2.happyFlow_u2
+	         $0383 = LoadCompactMusicCH2.exit_u2CH2
+	         $0387 = Change_AudioTrack
+	         $038f = Change_AudioTrack.resetFlags
+	         $039a = Change_AudioTrack.cleanAudioMasterClock
+	         $03a5 = StartGame
+	         $03a8 = PostLateGameSetup
+	         $03b2 = MainLoop
+	         $03b2 = MainLoop.nonVbl
+	         $03be = PostMutateNonVisualGameState
+	         $03c9 = PostMutateNonVisualGameState.waitVbl_u3
+	         $03cf = PostMutateNonVisualGameState.out_u3
+	         $03d3 = PostMutateVisualGameState
+	         $03d6 = OffsetAddressBlockPos
+	         $03d6 = Libraries
+	         $03dd = OffsetAddressBlockPos.loopMul
+	         $03e8 = OffsetAddressBlockNeg
+	         $03e9 = OffsetAddressBlockNeg.loopw
+	         $03f5 = OffsetAddressBlockNeg.complex
+	         $03fa = OffsetAddressBlockNeg.loopend
+	         $0402 = Memcopy
+	         $0402 = Memcopy.lpm
+	         $040b = MemcopyVBlankSafe
+	         $0416 = MemcopyVBlankSafe.waitVbl_u6
+	         $041c = MemcopyVBlankSafe.out_u6
+	         $041d = MemcopyVBlankSafe.lpm
+	         $0426 = MemcopySafe
+	         $0429 = MemcopySafe.lpm
+	         $0435 = InitMemChunk
+	         $0439 = InitMemChunk.lp
+	         $0440 = InitMemChunk.out
+	         $0441 = InitMemChunkVBlankSafe
+	         $0445 = InitMemChunkVBlankSafe.lp
+	         $044c = InitMemChunkVBlankSafe.out
+	         $044d = ___LoadTilemapWithPositiveOffset
+	         $0451 = ___LoadTilemapWithPositiveOffset.loadLoop
+	         $0457 = ___LoadTilemapWithPositiveOffset.ldr_u7
+	         $045f = ___LoadTilemapWithPositiveOffset.ldr_u8
+	         $0467 = ___LoadTilemapWithPositiveOffset.ldr_u9
+	         $046f = ___LoadTilemapWithPositiveOffset.ldr_u10
+	         $0477 = ___LoadTilemapWithPositiveOffset.endLt
+	         $0478 = ___LoadTilemapWithNegativeOffset
+	         $047c = ___LoadTilemapWithNegativeOffset.loadLoop
+	         $0482 = ___LoadTilemapWithNegativeOffset.ldr_u11
+	         $048a = ___LoadTilemapWithNegativeOffset.ldr_u12
+	         $0492 = ___LoadTilemapWithNegativeOffset.ldr_u13
+	         $049a = ___LoadTilemapWithNegativeOffset.ldr_u14
+	         $04a2 = ___LoadTilemapWithNegativeOffset.endLt
+	         $04a3 = __LoadTilemapWithOffset
+	         $04b0 = __LoadTilemapWithOffset.negOffset
+	         $04b3 = __LoadTilemapWithOffset.out
+	         $04b4 = LoadScreenTilemap
+	         $04c6 = LoadWindowTilemap
+	         $04d6 = eoload
+	         $04d8 = CopyTilesWithOffset
+	         $04e2 = CopyTilesWithOffset.negOffset
+	         $04e8 = CopyTilesWithOffset.nowLoad
+	         $04f7 = CopyTilesWithOffset.handleCarry_u15
+	         $04fa = CopyTilesWithOffset.next_u15
+	         $0503 = CopyTilesWithOffset.handleCarry_u16
+	         $0506 = CopyTilesWithOffset.next_u16
+	         $050f = CopyTilesWithOffset.handleCarry_u17
+	         $0512 = CopyTilesWithOffset.next_u17
+	         $051b = CopyTilesWithOffset.handleCarry_u18
+	         $051e = CopyTilesWithOffset.next_u18
+	         $0522 = BlankTile
+	         $0545 = MergeTiles
+	         $05a6 = LoadTileset
+	         $05aa = PollInput
+	         $0601 = SetInputState
+	         $0614 = GetNthEntryFromTextTable
+	         $0620 = GetNthEntryFromTextTable.workloop
+	         $0623 = GetNthEntryFromTextTable.incloop
+	         $0629 = GetNthEntryFromTextTable.incdone
+	         $062f = GetNthEntryFromTextTable.exit
+	         $0633 = StrCpy
+	         $063f = StrCpy.strcpyLoop
+	         $064a = StrCpy.endStrcpy
+	         $0651 = StrCpyWithCleanup
+	         $065d = StrCpyWithCleanup.strcpyLoop
+	         $0669 = StrCpyWithCleanup.endStrcpy
+	         $066d = StrCpyWithCleanup.cleanup
+	         $0675 = StrCpyWithCleanup.exit
+	         $0679 = TextToTilemap9800
+	         $0682 = TextToTilemap9800.loop
+	         $068d = TextToTilemap9800.exit
+	         $068f = PlayChannel_MyMotif_Bass
+	         $068f = EndLibraries
+	         $0696 = PlayChannel_MyMotif_Bass.loadPkt
+	         $069d = PlayChannel_MyMotif_Bass.reset
+	         $06a3 = PlayChannel_MyMotif_Bass.afterReset_u19
+	         $06b6 = PlayChannel_MyMotif_Bass.endOfWork_u19
+	         $06c0 = PlayChannel_MyMotif_Bass.restoreContext_u19
+	         $06c2 = PlayChannel_MyMotif_Treble
+	         $06c9 = PlayChannel_MyMotif_Treble.loadPkt
+	         $06d0 = PlayChannel_MyMotif_Treble.reset
+	         $06d6 = PlayChannel_MyMotif_Treble.afterReset_u20
+	         $06e9 = PlayChannel_MyMotif_Treble.endOfWork_u20
+	         $06f3 = PlayChannel_MyMotif_Treble.restoreContext_u20
+	         $06f5 = TrkMyMotif
+	         $06fc = AudioPlay
+	         $0715 = AudioPlay.testTrk0
+	         $0719 = AudioPlay.storeFunctionPointer__u21_TrkMyMotif
+	         $0723 = AudioPlay.callFun
+	         $0723 = AudioPlay.notTrk0
+	         $0723 = AudioPlay.callFunctionPointer__u22_wAudioFunPointer
+	         $0730 = AudioPlay.audioPlayEnd
+	         $0730 = AudioPlay.postFP_u22
+	         $0733 = SetupTiles
+	         $0736 = SetupTilemaps
+	         $0739 = LateGameSetup
+	         $073c = LastInputsHandle
+	         $073d = UpDownHandle
+	         $073e = LeftRightHandle
+	         $073f = AHandle
+	         $0740 = BHandle
+	         $0741 = StartHandle
+	         $0742 = SelectHandle
+	         $0743 = MutateNonVisualGameStateHandler
+	         $0749 = MutateVisualGameStateHandler
+	         $074f = MutateNonVisualGameState
+	         $075f = MutateVisualGameState
+	         $076c = _HandleTrackerInput
+	EMPTY: $076d-$3fff ($3893 bytes)
+	TOTAL EMPTY: $3946 bytes
+
+VRAM bank #0:
+	SECTION: $8000 ($0000 bytes) ["TileSets"]
+	         $8000 = firstTilesetEntry
+	EMPTY
+
+WRAM0 bank #0:
+	SECTION: $c000-$c01a ($001b bytes) ["VARIABLES"]
+	         $c000 = firstVariableEntry
+	         $c000 = wCurrentTilemap
+	         $c000 = GlobalVariables
+	         $c002 = wCurrentTilemapOffset
+	         $c003 = wCurrentWindowTilemap
+	         $c005 = wCurrentWindowTilemapOffset
+	         $c006 = wAudioFunPointer
+	         $c006 = GlobalVariablesEnd
+	         $c008 = AudioState
+	         $c008 = AudioState.trackName
+	         $c019 = GameState
+	         $c019 = room
+	         $c01a = wLastUpdatedInput
+	         $c01a = GameStateEnd
+	         $c01b = lastVariableEntry
+	EMPTY: $c01b-$dfff ($1fe5 bytes)
+	TOTAL EMPTY: $1fe5 bytes
+
+HRAM bank #0:
+	SECTION: $ff80-$ff97 ($0018 bytes) ["HighVars"]
+	         $ff80 = inVBlank
+	         $ff80 = firstHRAMEntry
+	         $ff81 = wTimeCounter
+	         $ff82 = wFrameCounter
+	         $ff83 = wFrameCounter60
+	         $ff84 = wSecCounter
+	         $ff85 = wMusicFlagsCH1
+	         $ff85 = AudioChannelFlags
+	         $ff86 = wMusicOffsetCH1
+	         $ff87 = wMusicTimerCH1
+	         $ff88 = wMusicFlagsCH2
+	         $ff89 = wMusicOffsetCH2
+	         $ff8a = wMusicTimerCH2
+	         $ff8b = wMusicFlagsCH3
+	         $ff8c = wMusicOffsetCH3
+	         $ff8d = wMusicTimerCH3
+	         $ff8e = wMusicFlagsCH4
+	         $ff8f = wMusicOffsetCH4
+	         $ff90 = wMusicTimerCH4
+	         $ff91 = wAudioMasterClock
+	         $ff91 = AudioChannelFlagsEnd
+	         $ff92 = wOverallOffsetPitch
+	         $ff93 = wMusicTrack
+	         $ff94 = wCurKeys
+	         $ff95 = wPrevKeys
+	         $ff96 = wNewlyPressed
+	         $ff97 = wNewlyReleased
+	         $ff98 = lastHighVariableEntry
+	EMPTY: $ff98-$fffe ($0067 bytes)
+	TOTAL EMPTY: $0067 bytes

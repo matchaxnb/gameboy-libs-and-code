@@ -528,6 +528,7 @@ MACRO ZoneLengthVar
   ;ASSERT \1End
   ASSERT STRLEN("\2") > 0
   DEF \2 = (\1End - \1)
+  PRINTLN "Defined \2 as {\2}"
 ENDM
 /**
 We encode our text tables as follows:

@@ -7,6 +7,7 @@ DEF UpInactiveChar = GFX_TILES_OFFSET + 11
 DEF DownActiveChar = GFX_TILES_OFFSET + 14
 DEF DownInactiveChar = GFX_TILES_OFFSET + 13
 
+INCLUDE "sanity.inc"
 SECTION FRAGMENT "PROGRAM", ROM0
 
 
